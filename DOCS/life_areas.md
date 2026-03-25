@@ -53,9 +53,9 @@ Lo que haces en el mundo y el sentido que tiene para ti.
 Tu relación con el dinero y la tranquilidad que te da.
 
 **Preguntas**
-- ¿Te sientes en paz con tu situación económica?
+- ¿Te sientes tranquila con tu situación económica actual?
 - ¿Tienes control sobre tus ingresos y gastos?
-- ¿Sientes que el dinero limita tus decisiones?
+- ¿El dinero condiciona las decisiones que te gustaría tomar?
 - ¿Puedes permitirte la vida que te gustaría?
 - ¿Sientes que estás construyendo estabilidad a futuro?
 
@@ -70,8 +70,8 @@ Cómo te vinculas con los demás: pareja, amigos, familia y comunidad.
 - ¿Te sientes acompañada en tu vida?
 - ¿Tienes relaciones que te aportan bienestar?
 - ¿Puedes ser tú misma con las personas cercanas?
-- ¿Sientes conexión real con alguien cercano?
-- ¿Tus relaciones te nutren o te desgastan?
+- ¿Sientes conexión real con alguien importante para ti?
+- ¿Tus relaciones te dan energía o te dejan agotada?
 
 ---
 
