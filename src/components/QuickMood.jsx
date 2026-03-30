@@ -1,27 +1,19 @@
 import { useState } from "react";
-
-const moods = [
-  "Necesito inspiración",
-  "Quiero reflexionar",
-  "Busco calma",
-  "Necesito motivación",
-  "Me apetece algo profundo",
-  "Quiero aventura",
-];
+import { moods } from "../data/moods";
 
 function QuickMood({ onBack, onMoodSelect }) {
   const [selectedMood, setSelectedMood] = useState("");
 
-  const handleMoodSelect = (mood) => {
-    setSelectedMood(mood);
+  const handleMoodSelect = (moodId) => {
+    setSelectedMood(moodId);
 
     window.setTimeout(() => {
       if (onMoodSelect) {
-        onMoodSelect(mood);
+        onMoodSelect(moodId);
         return;
       }
 
-      window.alert(`Aquí irá la recomendación para: ${mood}`);
+      window.alert(`Aquí irá la recomendación para: ${moodId}`);
     }, 120);
   };
 
@@ -62,13 +54,13 @@ function QuickMood({ onBack, onMoodSelect }) {
           <div className="mx-auto mt-12 max-w-5xl rounded-[28px] border border-white/10 bg-white/[0.03] p-4 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur sm:p-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {moods.map((mood) => {
-                const isSelected = selectedMood === mood;
+                const isSelected = selectedMood === mood.id;
 
                 return (
                   <button
-                    key={mood}
+                    key={mood.id}
                     type="button"
-                    onClick={() => handleMoodSelect(mood)}
+                    onClick={() => handleMoodSelect(mood.id)}
                     className={`rounded-2xl border px-5 py-6 text-left transition duration-300 focus-visible:outline-none focus-visible:ring-2 ${
                       isSelected
                         ? "border-[#d8c39b]/55 bg-[#17120d] text-white shadow-[0_16px_40px_rgba(0,0,0,0.32)] ring-[#d8c39b]"
@@ -85,7 +77,7 @@ function QuickMood({ onBack, onMoodSelect }) {
                       {isSelected ? "•" : ""}
                     </span>
                     <span className="block text-base font-medium leading-6">
-                      {mood}
+                      {mood.label}
                     </span>
                   </button>
                 );
