@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { recommendationsByMood } from "../data/recommendations";
 import {
   fetchMovieDetails,
@@ -8,7 +8,6 @@ import {
 function Result({ mood, onBack }) {
   const recommendation = recommendationsByMood[mood];
   const movies = recommendation?.movies || [];
-  const carouselRef = useRef(null);
   const [displayMovies, setDisplayMovies] = useState(movies);
   const [isLoadingMovies, setIsLoadingMovies] = useState(false);
 
@@ -91,16 +90,6 @@ function Result({ mood, onBack }) {
     };
   }, [movies]);
 
-  const scrollCarousel = (direction) => {
-    if (!carouselRef.current) return;
-
-    const { clientWidth } = carouselRef.current;
-    carouselRef.current.scrollBy({
-      left: direction * clientWidth * 0.72,
-      behavior: "smooth",
-    });
-  };
-
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
       <div className="absolute inset-0">
@@ -143,37 +132,15 @@ function Result({ mood, onBack }) {
                   Actualizando fichas
                 </p>
               ) : null}
-
-              <div className="hidden items-center gap-2 md:flex">
-                <button
-                  type="button"
-                  onClick={() => scrollCarousel(-1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-lg text-white/72 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
-                  aria-label="Ver recomendaciones anteriores"
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  onClick={() => scrollCarousel(1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-lg text-white/72 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
-                  aria-label="Ver más recomendaciones"
-                >
-                  →
-                </button>
-              </div>
             </div>
 
-            <div
-              ref={carouselRef}
-              className="no-scrollbar -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 pr-12 sm:-mx-10 sm:px-10 sm:pr-16 lg:pr-28"
-            >
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
               {displayMovies.slice(0, 4).map((movie) => (
                 <article
                   key={movie.id}
-                  className="w-[86vw] max-w-[26rem] shrink-0 snap-start rounded-[28px] border border-white/10 bg-white/[0.03] p-4 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:w-[30rem] lg:w-[calc((100%-2.5rem)/3.28)]"
+                  className="rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-3.5"
                 >
-                  <div className="relative flex aspect-[5/4] items-end overflow-hidden rounded-2xl border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-5">
+                  <div className="relative flex aspect-[2/3] items-end overflow-hidden rounded-[20px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-4">
                     {movie.image ? (
                       <>
                         <img
@@ -203,11 +170,11 @@ function Result({ mood, onBack }) {
                     </div>
                   </div>
 
-                  <div className="pt-5">
-                    <h2 className="text-[1.7rem] font-semibold leading-tight text-white">
+                  <div className="pt-4">
+                    <h2 className="text-[1.35rem] font-semibold leading-tight text-white">
                       {movie.title}
                     </h2>
-                    <p className="mt-3 max-w-[34ch] text-sm leading-6 text-white/68">
+                    <p className="mt-2 text-sm leading-6 text-white/68">
                       {movie.reason}
                     </p>
                   </div>
