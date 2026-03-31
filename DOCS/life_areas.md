@@ -1,133 +1,140 @@
 # Life Areas — MindCinema
 
-Este documento define las 8 áreas de vida utilizadas en MindCinema, junto con su significado y las preguntas utilizadas en el test.
+Este documento define las 9 áreas de vida utilizadas en MindCinema, junto con su significado, las preguntas del test y la lógica de puntuación.
 
 ---
 
-## 🧘‍♀️ Espiritual
+## Personal
 
 **Qué es**  
-Vivir con conciencia, valores y conexión con algo más grande.  
-No es necesariamente religión. Es la conexión con tus valores, tu forma de estar en el mundo y aquello que te trasciende.
+Tu relación contigo, tu forma de pensar y la sensación de avance que tienes en tu vida.
 
 **Preguntas**
-- ¿Tienes claros los valores que guían tu vida?
-- ¿Actúas de forma coherente con lo que crees que es correcto?
-- ¿Dedicas tiempo a reflexionar o conectar contigo (silencio, naturaleza, escritura…)?
-- ¿Sientes conexión con algo más grande que tú?
-- ¿Sientes paz interior o vas la mayor parte del tiempo en piloto automático?
+1. Consumo contenido que me hace pensar y crecer.
+2. Tomo acción cuando algo en mi vida no me encaja.
+3. Siento que mi forma de pensar me ayuda.
+4. Tengo una sensación de avance en mi vida.
 
 ---
 
-## 💪 Salud
+## Salud
 
 **Qué es**  
-Tu salud, tu energía y cómo te sientes en tu cuerpo en el día a día.
+Cómo te sientes física, mental y emocionalmente en tu día a día.
 
 **Preguntas**
-- ¿Tienes buena energía durante el día?
-- ¿Cuidas tu alimentación, descanso y movimiento?
-- ¿Te sientes bien en tu cuerpo?
-- ¿Tienes hábitos que sostienen tu salud?
-- ¿Descansas bien y te recuperas durante la noche?
+1. Me siento con energía y motivación en mi día a día.
+2. Me siento a gusto con mi cuerpo.
+3. Siento que mi mente juega a mi favor la mayor parte del tiempo.
+4. Me siento bien emocionalmente la mayor parte del tiempo.
 
 ---
 
-## 🌱 Vocación
+## Espiritualidad
 
 **Qué es**  
-Lo que haces en el mundo y el sentido que tiene para ti.
+La relación con tus valores, tu mundo interior y aquello que da profundidad y sentido a tu vida.
 
 **Preguntas**
-- ¿Disfrutas con lo que haces la mayor parte del tiempo?
-- ¿Estás usando tus talentos y capacidades?
-- ¿Sientes que lo que haces tiene sentido para ti?
-- ¿Tienes claro hacia dónde quieres ir ahora mismo?
-- ¿Sientes que estás construyendo algo propio o valioso?
+1. Tengo claros los valores que guían mi vida.
+2. Vivo de forma coherente con lo que es importante para mí.
+3. Encuentro momentos de calma y conexión conmigo.
+4. Siento conexión con algo más grande que yo.
 
 ---
 
-## 💰 Finanzas
+## Aventura
 
 **Qué es**  
-Tu relación con el dinero y la tranquilidad que te da.
+La relación que tienes con salir de la rutina, abrirte a lo nuevo y vivir experiencias que te ilusionan.
 
 **Preguntas**
-- ¿Te sientes tranquila con tu situación económica actual?
-- ¿Tienes control sobre tus ingresos y gastos?
-- ¿El dinero condiciona las decisiones que te gustaría tomar?
-- ¿Puedes permitirte la vida que te gustaría?
-- ¿Sientes que estás construyendo estabilidad a futuro?
+1. Hago cosas que me sacan de la rutina.
+2. Vivo experiencias que me ilusionan.
+3. Me permito probar cosas nuevas.
+4. Me siento viva y con ganas en mi día a día.
 
 ---
 
-## ❤️ Relaciones
+## Amor
 
 **Qué es**  
-Cómo te vinculas con los demás: pareja, amigos, familia y comunidad.
+La forma en que vives el amor, la apertura emocional y la calma en tus vínculos más íntimos.
 
 **Preguntas**
-- ¿Te sientes acompañada en tu vida?
-- ¿Tienes relaciones que te aportan bienestar?
-- ¿Puedes ser tú misma con las personas cercanas?
-- ¿Sientes conexión real con alguien importante para ti?
-- ¿Tus relaciones te dan energía o te dejan agotada?
+1. Siento que hay amor en mi vida.
+2. Puedo abrirme emocionalmente con alguien.
+3. Doy amor sin dejarme de lado.
+4. Me siento en calma en mis vínculos cercanos.
 
 ---
 
-## 🏡 Entorno
+## Familia
 
 **Qué es**  
-El espacio en el que vives y cómo influye en tu bienestar.
+La relación que tienes con tu familia y la cercanía, autenticidad y calma que encuentras en ese vínculo.
 
 **Preguntas**
-- ¿Tu casa te transmite calma o estrés?
-- ¿Te gusta el espacio en el que vives?
-- ¿Sientes orden o caos a tu alrededor?
-- ¿Tu entorno te ayuda a estar bien?
-- ¿Te rodeas de espacios que te inspiran?
+1. Siento cercanía con mi familia.
+2. Puedo ser yo cuando estoy con ellos.
+3. Siento que la relación con mi familia es llevadera.
+4. Comparto tiempo de calidad con ellos.
 
 ---
 
-## 🌍 Aventura
+## Amistad
 
 **Qué es**  
-Salir de la rutina, explorar y sentirte viva.
+La relación que tienes con tus amistades y la compañía, autenticidad y apoyo que encuentras en ellas.
 
 **Preguntas**
-- ¿Haces cosas que te sacan de la rutina?
-- ¿Vives experiencias que te ilusionan?
-- ¿Te permites probar cosas nuevas?
-- ¿Te sientes viva en tu día a día?
-- ¿Sientes curiosidad por descubrir cosas nuevas?
+1. Me siento acompañado por mis amistades.
+2. Puedo ser yo cuando estoy con mis amigos.
+3. Siento que mis amistades me aportan.
+4. Comparto momentos de calidad con mis amigos.
 
 ---
 
-## 🧠 Mente
+## Propósito
 
 **Qué es**  
-Cómo piensas, aprendes y expandes tu forma de ver el mundo.
+La relación que tienes con lo que haces, el sentido que encuentras en ello y la dirección que sientes en tu vida.
 
 **Preguntas**
-- ¿Sientes que estás aprendiendo y creciendo?
-- ¿Consumes contenido que te hace pensar (libros, películas, ideas…)?
-- ¿Tu forma de pensar te ayuda o te bloquea?
-- ¿Tienes curiosidad por entender más el mundo?
-- ¿Te cuestionas o simplemente repites lo conocido?
+1. Disfruto con lo que hago en mi día a día.
+2. Siento que lo que hago tiene sentido para mí.
+3. Siento que estoy aprovechando lo que se me da bien.
+4. Siento que voy en una dirección que me importa.
 
 ---
 
-## 🎯 Lógica del test
+## Finanzas
+
+**Qué es**  
+La relación que tienes con el dinero, la estabilidad que sientes y la libertad que te da tu situación económica.
+
+**Preguntas**
+1. Siento tranquilidad con mi situación económica.
+2. Puedo cubrir mis necesidades.
+3. Tomo decisiones pensando en mi estabilidad futura.
+4. Puedo permitirme el estilo de vida que quiero.
+
+---
+
+## Lógica del test
 
 ### Valor por respuesta
-- Sí → 1 punto  
-- A veces → 0.5 puntos  
-- No → 0 puntos  
+- Sí = 1
+- A veces = 0.5
+- No = 0
+
+### Puntuación por área
+Cada área tiene una puntuación de 0 a 4.
 
 ### Interpretación
-- 4 – 5 → área en buen momento  
-- 2 – 3 → área que merece atención  
-- 0 – 1 → área prioritaria  
+- 3–4 = área en buen momento
+- 1.5–2.5 = área que merece atención
+- 0–1 = área prioritaria
 
 ### Resultado
-Se seleccionan las 2–3 áreas con menor puntuación y se recomiendan películas asociadas a esas áreas.
+Se priorizan las 2–3 áreas con menor puntuación para la recomendación de películas y la reflexión asociada.
