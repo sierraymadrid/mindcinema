@@ -12,7 +12,9 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ### Changed
 
-- (pendiente)
+- Life areas updated to final 9 areas.
+- Test logic updated to 4 questions per area and new scoring.
+- Deep flow updated to full wheel test across all areas and removed `AreaSelector`.
 
 ### Fixed
 
@@ -57,7 +59,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.
 ### Added
 
 - Documentación base del proyecto en [`README.md`](../README.md).
-- Definición de las 8 áreas de vida y de la lógica del test en [`DOCS/life_areas.md`](./life_areas.md).
+- Definición inicial de las 8 áreas de vida y de la lógica del test en [`DOCS/life_areas.md`](./life_areas.md).
 - Documento de arquitectura funcional del MVP en [`DOCS/arquitectura.md`](./arquitectura.md).
 - Documentación de endpoints y uso de TMDB en [`DOCS/api_endpoints.md`](./api_endpoints.md).
 - Modelo de datos del frontend en [`DOCS/data_model.md`](./data_model.md).

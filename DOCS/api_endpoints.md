@@ -7,7 +7,7 @@ Este documento resume los endpoints de TMDB que MindCinema necesita en su primer
 Punto clave:
 
 - **TMDB** aporta películas, metadatos, popularidad, trending, keywords y detalles.
-- **MindCinema** aporta la lógica de negocio para agrupar películas en las 8 áreas de vida: Espiritual, Salud, Vocación, Finanzas, Relaciones, Entorno, Aventura y Mente.
+- **MindCinema** aporta la lógica de negocio para agrupar películas en las 9 áreas de vida: Personal, Salud, Espiritualidad, Aventura, Amor, Familia, Amistad, Propósito y Finanzas.
 - **TMDB no conoce estas áreas de vida de forma nativa**. Esa clasificación se construye en frontend mediante combinación de `keywords`, `genres` y curaduría propia.
 
 ---
@@ -192,7 +192,7 @@ Ejemplo de shape frontend sugerido:
   "genreIds": [53, 28, 80, 18, 9648],
   "originalLanguage": "en",
   "source": "tmdb",
-  "lifeAreas": ["Mente", "Aventura"],
+  "lifeAreas": ["Personal", "Aventura"],
   "matchReason": {
     "type": "keyword-plus-curation",
     "keywordsMatched": ["purpose", "journey"],
@@ -263,7 +263,7 @@ Ejemplo de shape frontend sugerido:
 ### 5. Dependencia de keywords
 
 - Las keywords en TMDB son útiles, pero no bastan por sí solas para modelar las áreas de vida.
-- Un área como `Vocación` o `Espiritual` puede necesitar varias keywords, géneros y curaduría manual.
+- Un área como `Propósito` o `Espiritualidad` puede necesitar varias keywords, géneros y curaduría manual.
 - Dos películas muy alineadas con la misma área pueden tener metadata muy distinta.
 - Por eso, la clasificación por área debe entenderse como **lógica propia de MindCinema**, no como verdad nativa de TMDB.
 
@@ -285,14 +285,15 @@ La estrategia recomendada para la fase inicial es:
 
 | Área | Keywords candidatas iniciales | Nota de uso en MindCinema |
 |---|---|---|
-| Espiritual | `spirituality`, `faith`, `meaning of life`, `self discovery`, `redemption` | Área especialmente dependiente de curaduría manual |
+| Personal | `identity`, `self discovery`, `change`, `growth`, `coming of age` | Área centrada en identidad, cambio y avance personal |
 | Salud | `health`, `illness`, `recovery`, `healing`, `mental health` | Puede mezclar salud física y emocional |
-| Vocación | `career`, `work`, `calling`, `ambition`, `purpose` | Conviene reforzar con curaduría porque la vocación rara vez aparece como tag exacta |
-| Finanzas | `money`, `wealth`, `business`, `finance`, `greed` | Suele tener mejor soporte en películas sobre éxito, poder o crisis |
-| Relaciones | `friendship`, `love`, `family relationships`, `marriage`, `community` | Área relativamente compatible con drama y romance |
-| Entorno | `home`, `house`, `neighborhood`, `nature`, `environment` | Requiere interpretación amplia y curaduría |
+| Espiritualidad | `spirituality`, `faith`, `meaning of life`, `inner peace`, `redemption` | Área especialmente dependiente de curaduría manual |
 | Aventura | `journey`, `adventure`, `expedition`, `survival`, `road trip` | Suele funcionar bien con keywords y géneros |
-| Mente | `mind`, `memory`, `identity`, `philosophy`, `obsession` | Muy útil combinar con thriller, drama y ciencia ficción |
+| Amor | `love`, `romance`, `intimacy`, `relationship`, `heartbreak` | Conviene distinguirlo de familia y amistad en la curaduría |
+| Familia | `family`, `parent child relationship`, `home`, `siblings`, `family conflict` | Área centrada en vínculos familiares |
+| Amistad | `friendship`, `friends`, `loyalty`, `companionship`, `group of friends` | Conviene reforzar con curaduría para separarla de amor |
+| Propósito | `career`, `work`, `calling`, `ambition`, `purpose` | Conviene reforzar con curaduría porque rara vez aparece como tag exacta |
+| Finanzas | `money`, `wealth`, `business`, `finance`, `greed` | Suele tener mejor soporte en películas sobre éxito, poder o crisis |
 
 ### Recomendación de implementación
 
@@ -300,14 +301,16 @@ La estrategia recomendada para la fase inicial es:
 
 ```ts
 const lifeAreaKeywordMap = {
-  Espiritual: [101, 205, 309],
+  Personal: [101, 205, 309],
   Salud: [401, 402, 403],
-  Vocacion: [501, 502],
+  Espiritualidad: [451, 452, 453],
+  Aventura: [501, 502],
+  Amor: [551, 552, 553],
+  Familia: [601, 602, 603],
+  Amistad: [651, 652, 653],
+  Proposito: [701, 702],
   Finanzas: [601, 602, 603],
-  Relaciones: [701, 702, 703],
-  Entorno: [801, 802],
-  Aventura: [901, 902, 903],
-  Mente: [1001, 1002, 1003]
+  // ...
 };
 ```
 

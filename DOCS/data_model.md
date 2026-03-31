@@ -28,20 +28,21 @@ El objetivo es mantener un modelo **simple, estable y fácil de usar en frontend
 
 ## 3. Modelo `LifeArea`
 
-`LifeArea` es el vocabulario cerrado de las 8 áreas de vida usadas en toda la app.
+`LifeArea` es el vocabulario cerrado de las 9 áreas de vida usadas en toda la app.
 
 ### TypeScript
 
 ```ts
 export type LifeArea =
-  | "espiritual"
+  | "personal"
   | "salud"
-  | "vocacion"
-  | "finanzas"
-  | "relaciones"
-  | "entorno"
+  | "espiritualidad"
   | "aventura"
-  | "mente";
+  | "amor"
+  | "familia"
+  | "amistad"
+  | "proposito"
+  | "finanzas";
 ```
 
 ### Notas
@@ -53,14 +54,15 @@ export type LifeArea =
 
 ```ts
 export const LIFE_AREA_LABELS: Record<LifeArea, string> = {
-  espiritual: "Espiritual",
+  personal: "Personal",
   salud: "Salud",
-  vocacion: "Vocación",
-  finanzas: "Finanzas",
-  relaciones: "Relaciones",
-  entorno: "Entorno",
+  espiritualidad: "Espiritualidad",
   aventura: "Aventura",
-  mente: "Mente",
+  amor: "Amor",
+  familia: "Familia",
+  amistad: "Amistad",
+  proposito: "Propósito",
+  finanzas: "Finanzas",
 };
 ```
 
@@ -141,7 +143,7 @@ export interface Movie {
   "originalLanguage": "en",
   "genreIds": [28, 878],
   "adult": false,
-  "lifeArea": "mente"
+  "lifeArea": "personal"
 }
 ```
 
@@ -176,7 +178,7 @@ export interface LifeAreaQuestion {
 
 ### Reglas
 
-- Deben existir exactamente 5 preguntas por área en el MVP
+- Deben existir exactamente 4 preguntas por área en el MVP
 - `id` debe ser estable para usarlo como key en React y para guardar respuestas
 - `order` permite asegurar el orden de render
 
@@ -185,16 +187,16 @@ export interface LifeAreaQuestion {
 ```ts
 export const lifeAreaQuestions: LifeAreaQuestion[] = [
   {
-    id: "mente-1",
-    lifeArea: "mente",
+    id: "personal-1",
+    lifeArea: "personal",
     order: 1,
-    text: "¿Sientes que estás aprendiendo y creciendo?",
+    text: "Consumo contenido que me hace pensar y crecer.",
   },
   {
-    id: "mente-2",
-    lifeArea: "mente",
+    id: "personal-2",
+    lifeArea: "personal",
     order: 2,
-    text: "¿Consumes contenido que te hace pensar?",
+    text: "Tomo acción cuando algo en mi vida no me encaja.",
   },
 ];
 ```
@@ -229,12 +231,11 @@ export interface AreaAnswer {
 export interface AreaScore {
   lifeArea: LifeArea;
   score: number;
-  maxScore: 5;
+  maxScore: 4;
   answers: AreaAnswer[];
 }
 
 export interface TestResult {
-  selectedAreas: LifeArea[];
   areaScores: AreaScore[];
   recommendedAreas: LifeArea[];
 }
@@ -242,62 +243,57 @@ export interface TestResult {
 
 ### Reglas de negocio
 
-- El usuario selecciona entre 1 y 3 áreas
-- Cada área contiene 5 preguntas
-- La puntuación de cada área va de `0` a `5`
+- El test recorre las 9 áreas de vida
+- Cada área contiene 4 preguntas
+- La puntuación de cada área va de `0` a `4`
 - Se recomiendan películas de las `2` o `3` áreas con menor puntuación
 
 ### Criterio recomendado para `recommendedAreas`
 
-- Si el usuario seleccionó 1 área: recomendar esa misma área
-- Si seleccionó 2 áreas: recomendar las 2
-- Si seleccionó 3 áreas: recomendar las 2 o 3 con menor puntuación según la UX definida
+- Ordenar las 9 áreas por puntuación ascendente
+- Recomendar por defecto las 2 áreas con menor puntuación
 - En caso de empate en la frontera, se puede incluir una tercera área para no cortar artificialmente
 
 ### Ejemplo JSON
 
 ```json
 {
-  "selectedAreas": ["salud", "relaciones", "mente"],
   "areaScores": [
     {
       "lifeArea": "salud",
       "score": 2.5,
-      "maxScore": 5,
+      "maxScore": 4,
       "answers": [
         { "questionId": "salud-1", "answer": "sometimes", "value": 0.5 },
         { "questionId": "salud-2", "answer": "yes", "value": 1 },
         { "questionId": "salud-3", "answer": "no", "value": 0 },
-        { "questionId": "salud-4", "answer": "yes", "value": 1 },
-        { "questionId": "salud-5", "answer": "no", "value": 0 }
+        { "questionId": "salud-4", "answer": "yes", "value": 1 }
       ]
     },
     {
-      "lifeArea": "relaciones",
+      "lifeArea": "familia",
       "score": 1.5,
-      "maxScore": 5,
+      "maxScore": 4,
       "answers": [
-        { "questionId": "relaciones-1", "answer": "yes", "value": 1 },
-        { "questionId": "relaciones-2", "answer": "no", "value": 0 },
-        { "questionId": "relaciones-3", "answer": "no", "value": 0 },
-        { "questionId": "relaciones-4", "answer": "sometimes", "value": 0.5 },
-        { "questionId": "relaciones-5", "answer": "no", "value": 0 }
+        { "questionId": "familia-1", "answer": "yes", "value": 1 },
+        { "questionId": "familia-2", "answer": "no", "value": 0 },
+        { "questionId": "familia-3", "answer": "no", "value": 0 },
+        { "questionId": "familia-4", "answer": "sometimes", "value": 0.5 }
       ]
     },
     {
-      "lifeArea": "mente",
+      "lifeArea": "personal",
       "score": 4,
-      "maxScore": 5,
+      "maxScore": 4,
       "answers": [
-        { "questionId": "mente-1", "answer": "yes", "value": 1 },
-        { "questionId": "mente-2", "answer": "yes", "value": 1 },
-        { "questionId": "mente-3", "answer": "sometimes", "value": 0.5 },
-        { "questionId": "mente-4", "answer": "yes", "value": 1 },
-        { "questionId": "mente-5", "answer": "sometimes", "value": 0.5 }
+        { "questionId": "personal-1", "answer": "yes", "value": 1 },
+        { "questionId": "personal-2", "answer": "yes", "value": 1 },
+        { "questionId": "personal-3", "answer": "sometimes", "value": 0.5 },
+        { "questionId": "personal-4", "answer": "yes", "value": 1 }
       ]
     }
   ],
-  "recommendedAreas": ["relaciones", "salud"]
+  "recommendedAreas": ["familia", "salud"]
 }
 ```
 
@@ -493,7 +489,7 @@ export interface DeepRecommendationViewModel {
 
 Ejemplo de flujo:
 
-1. El usuario selecciona áreas
+1. El usuario recorre el test completo
 2. El frontend carga `LifeAreaQuestion[]`
 3. Se calculan `areaScores`
 4. Se obtienen `recommendedAreas`
