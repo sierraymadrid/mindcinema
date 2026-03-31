@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { answerOptions, lifeAreasQuestions } from "../data/questions";
+import lifeAreas from "../data/lifeAreas";
 
-const area = lifeAreasQuestions.find((item) => item.id === "salud") || lifeAreasQuestions[0];
-
-const areaDescriptions = {
-  salud: "Una mirada breve a cómo se siente tu cuerpo, tu descanso y tu energía hoy.",
-};
+const answerOptions = ["Sí", "A veces", "No"];
+const area = lifeAreas.find((item) => item.key === "salud") || lifeAreas[0];
 
 function TestAreaScreen() {
   const [state, setState] = useState({
@@ -23,6 +20,10 @@ function TestAreaScreen() {
         answers: nextAnswers,
       };
     });
+  }
+
+  function handleContinue() {
+    console.log(state.answers);
   }
 
   return (
@@ -46,18 +47,23 @@ function TestAreaScreen() {
           </h1>
 
           <p className="mt-3 max-w-lg text-sm leading-6 text-white/60 sm:text-base sm:leading-7">
-            {areaDescriptions[area.id] || "Cuatro preguntas breves para leer con calma cómo está esta parte de tu vida."}
+            {area.description}
           </p>
 
           <div className="mt-8 space-y-5">
             {area.questions.map((question, questionIndex) => (
               <article
-                key={question.id}
+                key={question}
                 className="rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5"
               >
-                <p className="text-base leading-7 text-white/88">
-                  {question.text}
-                </p>
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#d8c39b]/20 bg-white/[0.03] text-sm font-medium text-[#d8c39b]">
+                    {questionIndex + 1}
+                  </span>
+                  <p className="text-base leading-7 text-white/88">
+                    {question}
+                  </p>
+                </div>
 
                 <div className="mt-4 flex flex-wrap gap-2.5">
                   {answerOptions.map((option) => {
@@ -70,7 +76,7 @@ function TestAreaScreen() {
                         onClick={() => handleAnswerSelect(questionIndex, option)}
                         className={`rounded-full px-4 py-2 text-sm font-medium transition duration-200 ${
                           isSelected
-                            ? "border border-[#d8c39b]/45 bg-[#d8c39b]/12 text-white"
+                            ? "border border-[#d8c39b]/60 bg-[linear-gradient(135deg,rgba(224,196,150,0.24),rgba(224,196,150,0.14))] text-white shadow-[0_10px_28px_rgba(0,0,0,0.28)] ring-1 ring-inset ring-[#f0dfbd]/25"
                             : "border border-white/10 bg-white/[0.03] text-white/70 hover:border-white/18 hover:bg-white/[0.06] hover:text-white/90"
                         }`}
                       >
@@ -86,6 +92,7 @@ function TestAreaScreen() {
           <button
             type="button"
             disabled={!isComplete}
+            onClick={handleContinue}
             className={`mt-8 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-medium transition duration-300 ${
               isComplete
                 ? "border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
