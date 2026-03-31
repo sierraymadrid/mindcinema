@@ -7,6 +7,20 @@ const answerScores = {
   "A veces": 0.5,
   No: 0,
 };
+const wheelSize = 360;
+const wheelCenter = wheelSize / 2;
+const wheelRadius = 104;
+const wheelLabelRadius = 146;
+const wheelLevels = 4;
+
+function getWheelPoint(index, total, radius) {
+  const angle = (-Math.PI / 2) + (index / total) * Math.PI * 2;
+
+  return {
+    x: wheelCenter + Math.cos(angle) * radius,
+    y: wheelCenter + Math.sin(angle) * radius,
+  };
+}
 
 function TestAreaScreen() {
   const [state, setState] = useState({
@@ -35,9 +49,19 @@ function TestAreaScreen() {
         ...area,
         score,
       };
+    });
+  const sortedAreas = [...scoredAreas].sort(
+    (firstArea, secondArea) => firstArea.score - secondArea.score
+  );
+  const wheelPolygonPoints = scoredAreas
+    .map((area, index) => {
+      const normalizedScore = area.score / 4;
+      const point = getWheelPoint(index, scoredAreas.length, wheelRadius * normalizedScore);
+
+      return `${point.x},${point.y}`;
     })
-    .sort((firstArea, secondArea) => firstArea.score - secondArea.score);
-  const priorityAreas = scoredAreas.filter((area, index, areas) => {
+    .join(" ");
+  const priorityAreas = sortedAreas.filter((area, index, areas) => {
     if (index < 2) {
       return true;
     }
@@ -107,12 +131,71 @@ function TestAreaScreen() {
             </p>
 
             <div className="mt-8 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
+              <div className="mx-auto max-w-[360px]">
+                <svg
+                  viewBox={`0 0 ${wheelSize} ${wheelSize}`}
+                  className="h-auto w-full"
+                  role="img"
+                  aria-label="Rueda de vida con el equilibrio actual de tus áreas"
+                >
+                  {Array.from({ length: wheelLevels }).map((_, levelIndex) => (
+                    <circle
+                      key={`grid-circle-${levelIndex + 1}`}
+                      cx={wheelCenter}
+                      cy={wheelCenter}
+                      r={(wheelRadius / wheelLevels) * (levelIndex + 1)}
+                      fill="none"
+                      stroke="rgba(255,255,255,0.12)"
+                      strokeWidth="1"
+                    />
+                  ))}
+
+                  {scoredAreas.map((area, index) => {
+                    const linePoint = getWheelPoint(index, scoredAreas.length, wheelRadius);
+                    const labelPoint = getWheelPoint(index, scoredAreas.length, wheelLabelRadius);
+
+                    return (
+                      <g key={area.key}>
+                        <line
+                          x1={wheelCenter}
+                          y1={wheelCenter}
+                          x2={linePoint.x}
+                          y2={linePoint.y}
+                          stroke="rgba(255,255,255,0.1)"
+                          strokeWidth="1"
+                        />
+                        <text
+                          x={labelPoint.x}
+                          y={labelPoint.y}
+                          fill="rgba(255,255,255,0.55)"
+                          fontSize="10"
+                          textAnchor={labelPoint.x >= wheelCenter + 8 ? "start" : labelPoint.x <= wheelCenter - 8 ? "end" : "middle"}
+                          dominantBaseline={labelPoint.y > wheelCenter + 20 ? "hanging" : labelPoint.y < wheelCenter - 20 ? "auto" : "middle"}
+                        >
+                          {area.title}
+                        </text>
+                      </g>
+                    );
+                  })}
+
+                  <polygon
+                    points={wheelPolygonPoints}
+                    fill="rgba(216,195,155,0.16)"
+                    stroke="rgba(216,195,155,0.72)"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div className="mt-8 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
               <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-white/55">
                 Todas las áreas
               </h2>
 
               <div className="mt-4 space-y-3">
-                {scoredAreas.map((area) => (
+                {sortedAreas.map((area) => (
                   <div
                     key={area.key}
                     className="flex items-center justify-between gap-4 border-b border-white/6 pb-3 last:border-b-0 last:pb-0"
