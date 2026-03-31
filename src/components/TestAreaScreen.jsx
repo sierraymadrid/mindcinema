@@ -2,6 +2,11 @@ import { useState } from "react";
 import lifeAreas from "../data/lifeAreas";
 
 const answerOptions = ["Sí", "A veces", "No"];
+const answerScores = {
+  Sí: 1,
+  "A veces": 0.5,
+  No: 0,
+};
 
 function TestAreaScreen() {
   const [state, setState] = useState({
@@ -18,6 +23,27 @@ function TestAreaScreen() {
     null,
   ];
   const isCurrentAreaComplete = currentAnswers.every((answer) => answer !== null);
+  const scoredAreas = lifeAreas
+    .map((area) => {
+      const areaAnswers = state.answersByArea[area.key] || [];
+      const score = areaAnswers.reduce(
+        (total, answer) => total + (answer ? answerScores[answer] : 0),
+        0
+      );
+
+      return {
+        ...area,
+        score,
+      };
+    })
+    .sort((firstArea, secondArea) => firstArea.score - secondArea.score);
+  const priorityAreas = scoredAreas.filter((area, index, areas) => {
+    if (index < 2) {
+      return true;
+    }
+
+    return index === 2 && area.score === areas[1].score;
+  });
 
   function handleAnswerSelect(questionIndex, option) {
     setState((currentState) => {
@@ -74,8 +100,64 @@ function TestAreaScreen() {
               Test completado
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-              Resultado en construcción
+              Tu momento actual
             </h1>
+            <p className="mt-3 text-sm leading-6 text-white/60 sm:text-base sm:leading-7">
+              Una lectura inicial de las áreas que hoy se sienten más sólidas y las que pueden necesitar más atención.
+            </p>
+
+            <div className="mt-8 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
+              <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-white/55">
+                Todas las áreas
+              </h2>
+
+              <div className="mt-4 space-y-3">
+                {scoredAreas.map((area) => (
+                  <div
+                    key={area.key}
+                    className="flex items-center justify-between gap-4 border-b border-white/6 pb-3 last:border-b-0 last:pb-0"
+                  >
+                    <span className="text-sm text-white/80 sm:text-base">
+                      {area.title}
+                    </span>
+                    <span className="text-sm font-medium text-[#d8c39b] sm:text-base">
+                      {area.score.toFixed(1)} / 4
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-[22px] border border-[#d8c39b]/18 bg-[linear-gradient(135deg,rgba(224,196,150,0.1),rgba(255,255,255,0.02))] p-4 sm:p-5">
+              <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-[#d8c39b]">
+                Áreas prioritarias
+              </h2>
+
+              <div className="mt-4 space-y-3">
+                {priorityAreas.map((area) => (
+                  <div
+                    key={area.key}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <span className="text-sm text-white/88 sm:text-base">
+                      {area.title}
+                    </span>
+                    <span className="text-sm font-medium text-white sm:text-base">
+                      {area.score.toFixed(1)} / 4
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
+              <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-white/55">
+                Tu recomendación
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-white/68 sm:text-base sm:leading-7">
+                Aquí aparecerán películas alineadas con las áreas que más atención necesitan.
+              </p>
+            </div>
           </div>
         </section>
       </main>
