@@ -7,14 +7,8 @@ export async function fetchMovieDetails(tmdbId) {
     return null;
   }
 
-  console.log(`[TMDB] fetchMovieDetails called: tmdbId=${tmdbId}`);
-
   const response = await fetch(
     `https://api.themoviedb.org/3/movie/${tmdbId}?language=es-ES&api_key=${apiKey}`
-  );
-
-  console.log(
-    `[TMDB] response status: tmdbId=${tmdbId} status=${response.status} ok=${response.ok}`
   );
 
   if (!response.ok) {
@@ -22,12 +16,6 @@ export async function fetchMovieDetails(tmdbId) {
   }
 
   const data = await response.json();
-
-  console.log(
-    `[TMDB] posterPath present: tmdbId=${tmdbId} hasPosterPath=${Boolean(
-      data.poster_path
-    )} posterPath=${data.poster_path || "none"}`
-  );
 
   return {
     overview: data.overview || "",

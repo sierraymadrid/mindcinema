@@ -11,10 +11,6 @@ function Result({ mood, onBack }) {
   const [displayMovies, setDisplayMovies] = useState(movies);
   const [isLoadingMovies, setIsLoadingMovies] = useState(false);
 
-  console.log(
-    `VITE_TMDB_API_KEY available: ${Boolean(import.meta.env.VITE_TMDB_API_KEY)}`
-  );
-
   useEffect(() => {
     let isCancelled = false;
 
@@ -34,46 +30,23 @@ function Result({ mood, onBack }) {
               const details = await fetchMovieDetails(movie.tmdbId);
 
               if (!details) {
-                console.log(
-                  `[Result] no TMDB details, using fallback: movieId=${movie.id}`
-                );
                 return movie;
               }
 
-              const enrichedMovie = {
+              return {
                 ...movie,
                 image: details.posterPath
                   ? `${TMDB_IMAGE_BASE_URL}${details.posterPath}`
                   : movie.image,
                 overview: details.overview?.trim() || movie.overview,
               };
-
-              console.log(
-                `[Result] enriched movie: movieId=${enrichedMovie.id} hasImage=${Boolean(
-                  enrichedMovie.image
-                )} image=${enrichedMovie.image || "none"}`
-              );
-
-              return enrichedMovie;
             } catch {
-              console.log(
-                `[Result] TMDB fetch failed, using fallback: movieId=${movie.id}`
-              );
               return movie;
             }
           })
         );
 
         if (!isCancelled) {
-          console.log(
-            `[Result] displayMovies updated: ${JSON.stringify(
-              nextMovies.map((movie) => ({
-                id: movie.id,
-                hasImage: Boolean(movie.image),
-                image: movie.image || null,
-              }))
-            )}`
-          );
           setDisplayMovies(nextMovies);
         }
       } finally {
@@ -148,16 +121,6 @@ function Result({ mood, onBack }) {
                           alt={`Poster de ${movie.title}`}
                           className="absolute inset-0 z-0 h-full w-full object-cover brightness-110"
                           loading="lazy"
-                          onLoad={() =>
-                            console.log(
-                              `[Result] image loaded: movieId=${movie.id} src=${movie.image}`
-                            )
-                          }
-                          onError={() =>
-                            console.log(
-                              `[Result] image failed: movieId=${movie.id} src=${movie.image}`
-                            )
-                          }
                         />
                         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#05070b]/60 via-[#05070b]/24 to-transparent" />
                       </>
