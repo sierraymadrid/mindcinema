@@ -56,14 +56,9 @@ function TestAreaScreen() {
                 key={question}
                 className="rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5"
               >
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#d8c39b]/20 bg-white/[0.03] text-sm font-medium text-[#d8c39b]">
-                    {questionIndex + 1}
-                  </span>
-                  <p className="text-base leading-7 text-white/88">
-                    {question}
-                  </p>
-                </div>
+                <p className="text-base leading-7 text-white/88">
+                  {questionIndex + 1}. {question}
+                </p>
 
                 <div className="mt-4 flex flex-wrap gap-2.5">
                   {answerOptions.map((option) => {
