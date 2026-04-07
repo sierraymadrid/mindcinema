@@ -1,141 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import lifeAreas from "../data/lifeAreas";
-import { TMDB_IMAGE_BASE_URL } from "../services/tmdb";
+import moviesByArea from "../data/deepRecommendations";
+import {
+  fetchMovieDetails,
+  TMDB_IMAGE_BASE_URL,
+} from "../services/tmdb";
 
 const answerOptions = ["Sí", "A veces", "No"];
 const answerScores = {
   Sí: 1,
   "A veces": 0.5,
   No: 0,
-};
-
-const moviesByArea = {
-  personal: [
-    {
-      title: "The Secret Life of Walter Mitty",
-      posterPath: "/dXgYQ7LUPbqe0R4L5ZQd3P4dQxX.jpg",
-    },
-    {
-      title: "Good Will Hunting",
-      posterPath: "/z2FnLKpFi1HPO7BEJxdkv6hpJSU.jpg",
-    },
-    {
-      title: "Paterson",
-      posterPath: null,
-    },
-  ],
-  salud: [
-    {
-      title: "Eat Pray Love",
-      posterPath: "/6ZfymJUnF3LILJYEFM7mR6Y8D0S.jpg",
-    },
-    {
-      title: "Perfect Days",
-      posterPath: null,
-    },
-    {
-      title: "Chef",
-      posterPath: null,
-    },
-  ],
-  espiritualidad: [
-    {
-      title: "Into the Wild",
-      posterPath: null,
-    },
-    {
-      title: "Tree of Life",
-      posterPath: null,
-    },
-    {
-      title: "Silence",
-      posterPath: null,
-    },
-  ],
-  aventura: [
-    {
-      title: "Wild",
-      posterPath: null,
-    },
-    {
-      title: "Tracks",
-      posterPath: null,
-    },
-    {
-      title: "The Secret Life of Walter Mitty",
-      posterPath: "/dXgYQ7LUPbqe0R4L5ZQd3P4dQxX.jpg",
-    },
-  ],
-  amor: [
-    {
-      title: "Before Sunrise",
-      posterPath: null,
-    },
-    {
-      title: "Her",
-      posterPath: "/zV8bHuSL6WXoD6FWogP9j4x80bL.jpg",
-    },
-    {
-      title: "Past Lives",
-      posterPath: null,
-    },
-  ],
-  familia: [
-    {
-      title: "Little Miss Sunshine",
-      posterPath: "/wKn7AJw730emLmSlYw3wibM9s4z.jpg",
-    },
-    {
-      title: "Minari",
-      posterPath: null,
-    },
-    {
-      title: "Shoplifters",
-      posterPath: null,
-    },
-  ],
-  amistad: [
-    {
-      title: "The Intouchables",
-      posterPath: "/323BP0itpxTsO0skTwdnVmf7YC9.jpg",
-    },
-    {
-      title: "Frances Ha",
-      posterPath: null,
-    },
-    {
-      title: "The Holdovers",
-      posterPath: null,
-    },
-  ],
-  proposito: [
-    {
-      title: "Soul",
-      posterPath: "/hm58Jw4Lw8OIeECIq5qyPYhAeRJ.jpg",
-    },
-    {
-      title: "Paterson",
-      posterPath: null,
-    },
-    {
-      title: "Ikiru",
-      posterPath: null,
-    },
-  ],
-  finanzas: [
-    {
-      title: "The Pursuit of Happyness",
-      posterPath: "/lBYOKAMcxIvuk9s9hMuecB9dPBV.jpg",
-    },
-    {
-      title: "Nomadland",
-      posterPath: null,
-    },
-    {
-      title: "99 Homes",
-      posterPath: null,
-    },
-  ],
 };
 
 const wheelSize = 420;
@@ -264,6 +139,7 @@ function TestAreaScreen() {
     answersByArea: {},
     isComplete: false,
   });
+  const [moviePostersById, setMoviePostersById] = useState({});
 
   const currentArea = lifeAreas[state.currentAreaIndex];
   const currentAnswers = state.answersByArea[currentArea.key] || [
@@ -316,8 +192,61 @@ function TestAreaScreen() {
   const recommendedMoviesByArea = priorityAreas.map((area) => ({
     ...area,
     percentage: getAreaPercentage(area.score),
-    movies: (moviesByArea[area.key] || []).slice(0, 3),
+    movies: (moviesByArea[area.key] || []).slice(0, 3).map((movie) => ({
+      ...movie,
+      posterPath: moviePostersById[movie.tmdbId] || null,
+    })),
   }));
+
+  const recommendedTmdbIds = priorityAreas.flatMap((area) =>
+    (moviesByArea[area.key] || [])
+      .slice(0, 3)
+      .map((movie) => movie.tmdbId)
+      .filter(Boolean)
+  );
+  const recommendedTmdbIdsKey = recommendedTmdbIds.join(",");
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function enrichPosters() {
+      if (!state.isComplete || !recommendedTmdbIds.length) {
+        return;
+      }
+
+      const missingIds = recommendedTmdbIds.filter(
+        (tmdbId) => !(tmdbId in moviePostersById)
+      );
+
+      if (!missingIds.length) {
+        return;
+      }
+
+      const posterEntries = await Promise.all(
+        missingIds.map(async (tmdbId) => {
+          try {
+            const details = await fetchMovieDetails(tmdbId);
+            return [tmdbId, details?.posterPath || null];
+          } catch {
+            return [tmdbId, null];
+          }
+        })
+      );
+
+      if (!isCancelled) {
+        setMoviePostersById((currentPosters) => ({
+          ...currentPosters,
+          ...Object.fromEntries(posterEntries),
+        }));
+      }
+    }
+
+    enrichPosters();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [moviePostersById, recommendedTmdbIds, recommendedTmdbIdsKey, state.isComplete]);
 
   function handleAnswerSelect(questionIndex, option) {
     setState((currentState) => {
@@ -520,7 +449,7 @@ function TestAreaScreen() {
                     <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-5">
                       {area.movies.map((movie) => (
                         <RecommendationCard
-                          key={`${area.key}-${movie.title}`}
+                          key={`${area.key}-${movie.title}-${movie.posterPath || "no-poster"}`}
                           movie={movie}
                         />
                       ))}
