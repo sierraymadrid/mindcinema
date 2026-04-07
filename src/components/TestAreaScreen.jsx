@@ -8,6 +8,7 @@ const answerScores = {
   "A veces": 0.5,
   No: 0,
 };
+
 const moviesByArea = {
   personal: [
     {
@@ -18,6 +19,10 @@ const moviesByArea = {
       title: "Good Will Hunting",
       posterPath: "/z2FnLKpFi1HPO7BEJxdkv6hpJSU.jpg",
     },
+    {
+      title: "Paterson",
+      posterPath: null,
+    },
   ],
   salud: [
     {
@@ -26,37 +31,53 @@ const moviesByArea = {
     },
     {
       title: "Perfect Days",
-      posterPath: "/a4w1zL3W9n4Jm7Y0R6fKx2L8Y3h.jpg",
+      posterPath: null,
+    },
+    {
+      title: "Chef",
+      posterPath: null,
     },
   ],
   espiritualidad: [
     {
       title: "Into the Wild",
-      posterPath: "/w8M9Z6l5Zt5W3c5Yv8V6M6N2B6P.jpg",
+      posterPath: null,
     },
     {
       title: "Tree of Life",
-      posterPath: "/rM8wQ2xN5R5M8S5W0m0lN8O2m0A.jpg",
+      posterPath: null,
+    },
+    {
+      title: "Silence",
+      posterPath: null,
     },
   ],
   aventura: [
     {
       title: "Wild",
-      posterPath: "/bM2z0r3G7R4l4Y3x4R0V5g6u9nS.jpg",
+      posterPath: null,
     },
     {
       title: "Tracks",
-      posterPath: "/4l4d0N1mV4Y6R4y5m8R7M6z0P2v.jpg",
+      posterPath: null,
+    },
+    {
+      title: "The Secret Life of Walter Mitty",
+      posterPath: "/dXgYQ7LUPbqe0R4L5ZQd3P4dQxX.jpg",
     },
   ],
   amor: [
     {
       title: "Before Sunrise",
-      posterPath: "/k3N3gGQ9zB2r6r7sB8F7Y0j7P7p.jpg",
+      posterPath: null,
     },
     {
       title: "Her",
       posterPath: "/zV8bHuSL6WXoD6FWogP9j4x80bL.jpg",
+    },
+    {
+      title: "Past Lives",
+      posterPath: null,
     },
   ],
   familia: [
@@ -66,7 +87,11 @@ const moviesByArea = {
     },
     {
       title: "Minari",
-      posterPath: "/hAUUrbpEPqxY6gH5K7L9Y2pQ4Rz.jpg",
+      posterPath: null,
+    },
+    {
+      title: "Shoplifters",
+      posterPath: null,
     },
   ],
   amistad: [
@@ -78,6 +103,10 @@ const moviesByArea = {
       title: "Frances Ha",
       posterPath: null,
     },
+    {
+      title: "The Holdovers",
+      posterPath: null,
+    },
   ],
   proposito: [
     {
@@ -86,7 +115,11 @@ const moviesByArea = {
     },
     {
       title: "Paterson",
-      posterPath: "/aX2vN5K7W8m6B4m9Y2m3X5p9Z8G.jpg",
+      posterPath: null,
+    },
+    {
+      title: "Ikiru",
+      posterPath: null,
     },
   ],
   finanzas: [
@@ -96,10 +129,15 @@ const moviesByArea = {
     },
     {
       title: "Nomadland",
-      posterPath: "/66GUmWpTHgAjyp4aBSXy63PZTiC.jpg",
+      posterPath: null,
+    },
+    {
+      title: "99 Homes",
+      posterPath: null,
     },
   ],
 };
+
 const wheelSize = 360;
 const wheelCenter = wheelSize / 2;
 const wheelRadius = 104;
@@ -107,7 +145,7 @@ const wheelLabelRadius = 146;
 const wheelLevels = 4;
 
 function getWheelPoint(index, total, radius) {
-  const angle = (-Math.PI / 2) + (index / total) * Math.PI * 2;
+  const angle = -Math.PI / 2 + (index / total) * Math.PI * 2;
 
   return {
     x: wheelCenter + Math.cos(angle) * radius,
@@ -117,6 +155,53 @@ function getWheelPoint(index, total, radius) {
 
 function getAreaPercentage(score) {
   return Math.floor((score / 4) * 100);
+}
+
+function scrollToArea(areaKey) {
+  const target = document.getElementById(`area-${areaKey}`);
+
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function RecommendationCard({ movie }) {
+  const [imageFailed, setImageFailed] = useState(!movie.posterPath);
+
+  return (
+    <article className="rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.05]">
+      <div className="relative flex aspect-[2/3] items-end overflow-hidden rounded-[20px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-4">
+        {!imageFailed ? (
+          <>
+            <img
+              src={`${TMDB_IMAGE_BASE_URL}${movie.posterPath}`}
+              alt=""
+              className="absolute inset-0 z-0 h-full w-full object-cover brightness-110"
+              loading="lazy"
+              onError={() => setImageFailed(true)}
+            />
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#05070b]/60 via-[#05070b]/24 to-transparent" />
+          </>
+        ) : null}
+
+        {imageFailed ? (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13]">
+            <div className="rounded-[18px] border border-dashed border-white/10 bg-white/[0.03] px-4 py-3 text-center">
+              <span className="text-[0.68rem] uppercase tracking-[0.22em] text-white/35">
+                MindCinema
+              </span>
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      <div className="pt-4">
+        <h3 className="text-[1.35rem] font-semibold leading-tight text-white">
+          {movie.title}
+        </h3>
+      </div>
+    </article>
+  );
 }
 
 function TestAreaScreen() {
@@ -134,30 +219,24 @@ function TestAreaScreen() {
     null,
   ];
   const isCurrentAreaComplete = currentAnswers.every((answer) => answer !== null);
-  const scoredAreas = lifeAreas
-    .map((area) => {
-      const areaAnswers = state.answersByArea[area.key] || [];
-      const score = areaAnswers.reduce(
-        (total, answer) => total + (answer ? answerScores[answer] : 0),
-        0
-      );
 
-      return {
-        ...area,
-        score,
-      };
-    });
+  const scoredAreas = lifeAreas.map((area) => {
+    const areaAnswers = state.answersByArea[area.key] || [];
+    const score = areaAnswers.reduce(
+      (total, answer) => total + (answer ? answerScores[answer] : 0),
+      0
+    );
+
+    return {
+      ...area,
+      score,
+    };
+  });
+
   const sortedAreas = [...scoredAreas].sort(
     (firstArea, secondArea) => firstArea.score - secondArea.score
   );
-  const wheelPolygonPoints = scoredAreas
-    .map((area, index) => {
-      const normalizedScore = area.score / 4;
-      const point = getWheelPoint(index, scoredAreas.length, wheelRadius * normalizedScore);
 
-      return `${point.x},${point.y}`;
-    })
-    .join(" ");
   const priorityAreas = sortedAreas.filter((area, index, areas) => {
     if (index < 2) {
       return true;
@@ -165,7 +244,21 @@ function TestAreaScreen() {
 
     return index === 2 && area.score === areas[1].score;
   });
+
   const priorityAreaKeys = new Set(priorityAreas.map((area) => area.key));
+
+  const wheelPolygonPoints = scoredAreas
+    .map((area, index) => {
+      const point = getWheelPoint(
+        index,
+        scoredAreas.length,
+        wheelRadius * (area.score / 4)
+      );
+
+      return `${point.x},${point.y}`;
+    })
+    .join(" ");
+
   const recommendedMoviesByArea = priorityAreas.map((area) => ({
     ...area,
     percentage: getAreaPercentage(area.score),
@@ -175,7 +268,10 @@ function TestAreaScreen() {
   function handleAnswerSelect(questionIndex, option) {
     setState((currentState) => {
       const areaKey = lifeAreas[currentState.currentAreaIndex].key;
-      const nextAnswers = [...(currentState.answersByArea[areaKey] || [null, null, null, null])];
+      const nextAnswers = [
+        ...(currentState.answersByArea[areaKey] || [null, null, null, null]),
+      ];
+
       nextAnswers[questionIndex] = option;
 
       return {
@@ -196,7 +292,6 @@ function TestAreaScreen() {
     const isLastArea = state.currentAreaIndex === lifeAreas.length - 1;
 
     if (isLastArea) {
-      console.log(state.answersByArea);
       setState((currentState) => ({
         ...currentState,
         isComplete: true,
@@ -221,20 +316,16 @@ function TestAreaScreen() {
           <div className="absolute inset-0 bg-black/35" />
         </div>
 
-        <section className="relative z-10 mx-auto w-full max-w-4xl px-6 py-14 sm:px-8 sm:py-16">
+        <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-14 sm:px-10 sm:py-16">
           <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-            <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white/50">
-              Resultado del test
-            </p>
-            <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-              Tu momento actual
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-white/60 sm:text-base sm:leading-7">
-              Estas son las áreas que hoy sostienen tu momento y las que pueden necesitar más atención.
-            </p>
+            <div className="text-center">
+              <h1 className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
+                Este es tu momento
+              </h1>
+            </div>
 
-            <div className="mt-10 rounded-[24px] border border-white/8 bg-black/15 p-5 sm:p-7">
-              <div className="mx-auto max-w-[420px]">
+            <section className="mt-12">
+              <div className="mx-auto max-w-[440px]">
                 <svg
                   viewBox={`0 0 ${wheelSize} ${wheelSize}`}
                   className="h-auto w-full"
@@ -254,8 +345,16 @@ function TestAreaScreen() {
                   ))}
 
                   {scoredAreas.map((area, index) => {
-                    const linePoint = getWheelPoint(index, scoredAreas.length, wheelRadius);
-                    const labelPoint = getWheelPoint(index, scoredAreas.length, wheelLabelRadius);
+                    const linePoint = getWheelPoint(
+                      index,
+                      scoredAreas.length,
+                      wheelRadius
+                    );
+                    const labelPoint = getWheelPoint(
+                      index,
+                      scoredAreas.length,
+                      wheelLabelRadius
+                    );
                     const valuePoint = getWheelPoint(
                       index,
                       scoredAreas.length,
@@ -270,25 +369,49 @@ function TestAreaScreen() {
                           y1={wheelCenter}
                           x2={linePoint.x}
                           y2={linePoint.y}
-                          stroke={isPriority ? "rgba(216,195,155,0.28)" : "rgba(255,255,255,0.1)"}
-                          strokeWidth={isPriority ? "1.6" : "1"}
+                          stroke={
+                            isPriority
+                              ? "rgba(216,195,155,0.28)"
+                              : "rgba(255,255,255,0.1)"
+                          }
+                          strokeWidth={isPriority ? "1.8" : "1"}
                         />
                         <text
                           x={labelPoint.x}
                           y={labelPoint.y}
-                          fill={isPriority ? "rgba(240,223,189,0.92)" : "rgba(255,255,255,0.72)"}
-                          fontSize="12"
+                          fill={
+                            isPriority
+                              ? "rgba(240,223,189,0.96)"
+                              : "rgba(255,255,255,0.78)"
+                          }
+                          fontSize="13"
                           fontWeight={isPriority ? "600" : "500"}
-                          textAnchor={labelPoint.x >= wheelCenter + 8 ? "start" : labelPoint.x <= wheelCenter - 8 ? "end" : "middle"}
-                          dominantBaseline={labelPoint.y > wheelCenter + 20 ? "hanging" : labelPoint.y < wheelCenter - 20 ? "auto" : "middle"}
+                          textAnchor={
+                            labelPoint.x >= wheelCenter + 8
+                              ? "start"
+                              : labelPoint.x <= wheelCenter - 8
+                                ? "end"
+                                : "middle"
+                          }
+                          dominantBaseline={
+                            labelPoint.y > wheelCenter + 20
+                              ? "hanging"
+                              : labelPoint.y < wheelCenter - 20
+                                ? "auto"
+                                : "middle"
+                          }
                         >
                           {area.title}
                         </text>
                         <circle
                           cx={valuePoint.x}
                           cy={valuePoint.y}
-                          r={isPriority ? "4" : "2.5"}
-                          fill={isPriority ? "rgba(240,223,189,0.95)" : "rgba(255,255,255,0.6)"}
+                          r={isPriority ? "4.5" : "2.5"}
+                          fill={
+                            isPriority
+                              ? "rgba(240,223,189,0.98)"
+                              : "rgba(255,255,255,0.6)"
+                          }
                         />
                       </g>
                     );
@@ -303,78 +426,68 @@ function TestAreaScreen() {
                   />
                 </svg>
               </div>
+            </section>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+            <section className="mt-10 text-center">
+              <p className="text-sm leading-6 text-white/52 sm:text-base">
+                Y estas son las areas que necesitan atencion
+              </p>
+
+              <div className="mt-4 flex flex-wrap justify-center gap-3">
                 {priorityAreas.map((area) => (
-                  <div
+                  <button
                     key={area.key}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.14),rgba(224,196,150,0.05))] px-3 py-2 text-sm shadow-[0_10px_30px_rgba(0,0,0,0.18)]"
+                    type="button"
+                    onClick={() => scrollToArea(area.key)}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.14),rgba(224,196,150,0.05))] px-3 py-2 text-sm text-white/90 shadow-[0_10px_30px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/34 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
                   >
-                    <span className="text-white/90">
-                      {area.title}
-                    </span>
+                    <span>{area.title}</span>
                     <span className="text-[#d8c39b]">
                       {getAreaPercentage(area.score)}%
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
-            </div>
+            </section>
 
-            <div className="mt-10 rounded-[24px] border border-white/8 bg-black/15 p-5 sm:p-7">
-              <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-white/55">
-                Películas para tu momento
-              </h2>
+            <section className="mt-20">
+              <div className="mx-auto max-w-3xl text-center">
+                <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
+                  CINE PARA CRECER
+                </p>
 
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-white/60 sm:text-base sm:leading-7">
-                Una primera selección para acompañar justo las áreas que hoy piden más cuidado.
-              </p>
+                <h2 className="mx-auto max-w-2xl text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
+                  Para ti, hoy
+                </h2>
 
-              <div className="mt-8 space-y-8">
+                <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-white/62 sm:text-lg">
+                  Cuatro elecciones distintas, ordenadas con un criterio claro para este momento.
+                </p>
+              </div>
+
+              <div className="mt-10 space-y-14">
                 {recommendedMoviesByArea.map((area) => (
-                  <section key={area.key}>
-                    <div className="flex items-center gap-3">
-                      <div className="inline-flex rounded-full border border-[#d8c39b]/18 bg-[#d8c39b]/10 px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-[#d8c39b]">
-                        {area.title}
-                      </div>
-                      <span className="text-sm text-white/45">
-                        {area.percentage}%
-                      </span>
-                    </div>
+                  <section
+                    key={area.key}
+                    id={`area-${area.key}`}
+                    className="scroll-mt-24"
+                  >
+                    <h3 className="text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl">
+                      {area.title}
+                    </h3>
 
-                    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-5">
                       {area.movies.map((movie) => (
-                        <article
+                        <RecommendationCard
                           key={`${area.key}-${movie.title}`}
-                          className="overflow-hidden rounded-[20px] border border-white/8 bg-white/[0.03] shadow-[0_20px_60px_rgba(0,0,0,0.18)]"
-                        >
-                          <div className="flex min-h-[148px]">
-                            {movie.posterPath ? (
-                              <img
-                                src={`${TMDB_IMAGE_BASE_URL}${movie.posterPath}`}
-                                alt={`Poster de ${movie.title}`}
-                                className="h-[148px] w-[104px] shrink-0 object-cover"
-                                loading="lazy"
-                              />
-                            ) : (
-                              <div className="flex h-[148px] w-[104px] shrink-0 items-center justify-center bg-white/[0.04] text-center text-[0.68rem] uppercase tracking-[0.18em] text-white/35">
-                                Sin poster
-                              </div>
-                            )}
-
-                            <div className="flex flex-1 items-center p-4">
-                              <h3 className="text-base font-medium leading-6 text-white/90 sm:text-lg">
-                                {movie.title}
-                              </h3>
-                            </div>
-                          </div>
-                        </article>
+                          movie={movie}
+                        />
                       ))}
                     </div>
                   </section>
                 ))}
               </div>
-            </div>
+            </section>
           </div>
         </section>
       </main>
