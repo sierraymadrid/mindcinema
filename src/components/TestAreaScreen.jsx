@@ -138,10 +138,10 @@ const moviesByArea = {
   ],
 };
 
-const wheelSize = 360;
+const wheelSize = 420;
 const wheelCenter = wheelSize / 2;
-const wheelRadius = 104;
-const wheelLabelRadius = 146;
+const wheelRadius = 112;
+const wheelLabelRadius = 156;
 const wheelLevels = 4;
 
 function getWheelPoint(index, total, radius) {
@@ -220,6 +220,30 @@ function ResultIntro() {
       </p>
     </div>
   );
+}
+
+function getWheelLabelTextAnchor(x) {
+  if (x >= wheelCenter + 10) {
+    return "start";
+  }
+
+  if (x <= wheelCenter - 10) {
+    return "end";
+  }
+
+  return "middle";
+}
+
+function getWheelLabelBaseline(y) {
+  if (y > wheelCenter + 24) {
+    return "hanging";
+  }
+
+  if (y < wheelCenter - 24) {
+    return "auto";
+  }
+
+  return "middle";
 }
 
 function CinematicBackground() {
@@ -341,24 +365,21 @@ function TestAreaScreen() {
         <CinematicBackground />
 
         <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-14 pt-20 sm:px-10 sm:pb-16 sm:pt-24">
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-            <div className="mx-auto max-w-3xl pt-1 text-center sm:pt-2">
-              <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
-                RESULTADO DEL TEST
-              </p>
-              <h1 className="text-3xl font-semibold leading-[1.06] tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
-                Este es tu momento
-              </h1>
-              <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
-                Una lectura serena de dónde estás hoy y de qué historias podrían acompañarte mejor ahora.
-              </p>
-            </div>
+          <div className="mx-auto max-w-3xl pt-1 text-center sm:pt-2">
+            <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
+              RESULTADO DEL TEST
+            </p>
+            <h1 className="text-3xl font-semibold leading-[1.06] tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
+              Este es tu momento
+            </h1>
+          </div>
 
-            <section className="mt-14 rounded-[24px] border border-white/8 bg-black/12 px-4 py-8 sm:px-8 sm:py-10">
-              <div className="mx-auto max-w-[480px]">
+          <div className="mt-12 rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+            <section className="rounded-[24px] border border-white/8 bg-black/12 px-4 py-8 sm:px-8 sm:py-10">
+              <div className="mx-auto max-w-[560px]">
                 <svg
                   viewBox={`0 0 ${wheelSize} ${wheelSize}`}
-                  className="h-auto w-full"
+                  className="h-auto w-full overflow-visible"
                   role="img"
                   aria-label="Rueda de vida con el equilibrio actual de tus áreas"
                 >
@@ -391,6 +412,7 @@ function TestAreaScreen() {
                       wheelRadius * (area.score / 4)
                     );
                     const isPriority = priorityAreaKeys.has(area.key);
+                    const areaPercentage = getAreaPercentage(area.score);
 
                     return (
                       <g key={area.key}>
@@ -412,26 +434,25 @@ function TestAreaScreen() {
                           fill={
                             isPriority
                               ? "rgba(240,223,189,0.96)"
-                              : "rgba(255,255,255,0.78)"
+                              : "rgba(255,255,255,0.82)"
                           }
-                          fontSize="13"
+                          fontSize={area.title.length > 11 ? "11.5" : "12.5"}
                           fontWeight={isPriority ? "600" : "500"}
-                          textAnchor={
-                            labelPoint.x >= wheelCenter + 8
-                              ? "start"
-                              : labelPoint.x <= wheelCenter - 8
-                                ? "end"
-                                : "middle"
-                          }
-                          dominantBaseline={
-                            labelPoint.y > wheelCenter + 20
-                              ? "hanging"
-                              : labelPoint.y < wheelCenter - 20
-                                ? "auto"
-                                : "middle"
-                          }
+                          textAnchor={getWheelLabelTextAnchor(labelPoint.x)}
+                          dominantBaseline={getWheelLabelBaseline(labelPoint.y)}
                         >
-                          {area.title}
+                          <tspan x={labelPoint.x} dy="0">
+                            {area.title}
+                          </tspan>
+                          <tspan
+                            x={labelPoint.x}
+                            dy="1.25em"
+                            fill={isPriority ? "rgba(240,223,189,0.82)" : "rgba(255,255,255,0.52)"}
+                            fontSize="10"
+                            fontWeight="500"
+                          >
+                            {areaPercentage}%
+                          </tspan>
                         </text>
                         <circle
                           cx={valuePoint.x}
@@ -479,8 +500,10 @@ function TestAreaScreen() {
                 ))}
               </div>
             </section>
+          </div>
 
-            <section className="mt-24 border-t border-white/8 pt-16 sm:mt-28 sm:pt-20">
+          <div className="mt-24 rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+            <section className="border-t border-white/8 pt-16 sm:pt-20">
               <ResultIntro />
 
               <div className="mt-10 space-y-14">
