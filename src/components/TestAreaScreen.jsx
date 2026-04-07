@@ -1,5 +1,6 @@
 import { useState } from "react";
 import lifeAreas from "../data/lifeAreas";
+import { TMDB_IMAGE_BASE_URL } from "../services/tmdb";
 
 const answerOptions = ["Sí", "A veces", "No"];
 const answerScores = {
@@ -8,15 +9,96 @@ const answerScores = {
   No: 0,
 };
 const moviesByArea = {
-  personal: ["The Secret Life of Walter Mitty"],
-  salud: ["Eat Pray Love"],
-  espiritualidad: ["Into the Wild"],
-  aventura: ["Wild"],
-  amor: ["Before Sunrise"],
-  familia: ["Little Miss Sunshine"],
-  amistad: ["The Intouchables"],
-  proposito: ["Soul"],
-  finanzas: ["The Pursuit of Happyness"],
+  personal: [
+    {
+      title: "The Secret Life of Walter Mitty",
+      posterPath: "/dXgYQ7LUPbqe0R4L5ZQd3P4dQxX.jpg",
+    },
+    {
+      title: "Good Will Hunting",
+      posterPath: "/z2FnLKpFi1HPO7BEJxdkv6hpJSU.jpg",
+    },
+  ],
+  salud: [
+    {
+      title: "Eat Pray Love",
+      posterPath: "/6ZfymJUnF3LILJYEFM7mR6Y8D0S.jpg",
+    },
+    {
+      title: "Perfect Days",
+      posterPath: "/a4w1zL3W9n4Jm7Y0R6fKx2L8Y3h.jpg",
+    },
+  ],
+  espiritualidad: [
+    {
+      title: "Into the Wild",
+      posterPath: "/w8M9Z6l5Zt5W3c5Yv8V6M6N2B6P.jpg",
+    },
+    {
+      title: "Tree of Life",
+      posterPath: "/rM8wQ2xN5R5M8S5W0m0lN8O2m0A.jpg",
+    },
+  ],
+  aventura: [
+    {
+      title: "Wild",
+      posterPath: "/bM2z0r3G7R4l4Y3x4R0V5g6u9nS.jpg",
+    },
+    {
+      title: "Tracks",
+      posterPath: "/4l4d0N1mV4Y6R4y5m8R7M6z0P2v.jpg",
+    },
+  ],
+  amor: [
+    {
+      title: "Before Sunrise",
+      posterPath: "/k3N3gGQ9zB2r6r7sB8F7Y0j7P7p.jpg",
+    },
+    {
+      title: "Her",
+      posterPath: "/zV8bHuSL6WXoD6FWogP9j4x80bL.jpg",
+    },
+  ],
+  familia: [
+    {
+      title: "Little Miss Sunshine",
+      posterPath: "/wKn7AJw730emLmSlYw3wibM9s4z.jpg",
+    },
+    {
+      title: "Minari",
+      posterPath: "/hAUUrbpEPqxY6gH5K7L9Y2pQ4Rz.jpg",
+    },
+  ],
+  amistad: [
+    {
+      title: "The Intouchables",
+      posterPath: "/323BP0itpxTsO0skTwdnVmf7YC9.jpg",
+    },
+    {
+      title: "Frances Ha",
+      posterPath: null,
+    },
+  ],
+  proposito: [
+    {
+      title: "Soul",
+      posterPath: "/hm58Jw4Lw8OIeECIq5qyPYhAeRJ.jpg",
+    },
+    {
+      title: "Paterson",
+      posterPath: "/aX2vN5K7W8m6B4m9Y2m3X5p9Z8G.jpg",
+    },
+  ],
+  finanzas: [
+    {
+      title: "The Pursuit of Happyness",
+      posterPath: "/lBYOKAMcxIvuk9s9hMuecB9dPBV.jpg",
+    },
+    {
+      title: "Nomadland",
+      posterPath: "/66GUmWpTHgAjyp4aBSXy63PZTiC.jpg",
+    },
+  ],
 };
 const wheelSize = 360;
 const wheelCenter = wheelSize / 2;
@@ -31,6 +113,10 @@ function getWheelPoint(index, total, radius) {
     x: wheelCenter + Math.cos(angle) * radius,
     y: wheelCenter + Math.sin(angle) * radius,
   };
+}
+
+function getAreaPercentage(score) {
+  return Math.floor((score / 4) * 100);
 }
 
 function TestAreaScreen() {
@@ -79,13 +165,12 @@ function TestAreaScreen() {
 
     return index === 2 && area.score === areas[1].score;
   });
-  const recommendedMovies = priorityAreas.flatMap((area) =>
-    (moviesByArea[area.key] || []).slice(0, 2).map((title) => ({
-      title,
-      areaTitle: area.title,
-      areaKey: area.key,
-    }))
-  );
+  const priorityAreaKeys = new Set(priorityAreas.map((area) => area.key));
+  const recommendedMoviesByArea = priorityAreas.map((area) => ({
+    ...area,
+    percentage: getAreaPercentage(area.score),
+    movies: (moviesByArea[area.key] || []).slice(0, 3),
+  }));
 
   function handleAnswerSelect(questionIndex, option) {
     setState((currentState) => {
@@ -136,20 +221,20 @@ function TestAreaScreen() {
           <div className="absolute inset-0 bg-black/35" />
         </div>
 
-        <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-xl items-center px-6 py-14 sm:px-8 sm:py-16">
-          <div className="w-full rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-7">
+        <section className="relative z-10 mx-auto w-full max-w-4xl px-6 py-14 sm:px-8 sm:py-16">
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
             <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white/50">
-              Test completado
+              Resultado del test
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
               Tu momento actual
             </h1>
             <p className="mt-3 text-sm leading-6 text-white/60 sm:text-base sm:leading-7">
-              Una lectura inicial de las áreas que hoy se sienten más sólidas y las que pueden necesitar más atención.
+              Estas son las áreas que hoy sostienen tu momento y las que pueden necesitar más atención.
             </p>
 
-            <div className="mt-8 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
-              <div className="mx-auto max-w-[360px]">
+            <div className="mt-10 rounded-[24px] border border-white/8 bg-black/15 p-5 sm:p-7">
+              <div className="mx-auto max-w-[420px]">
                 <svg
                   viewBox={`0 0 ${wheelSize} ${wheelSize}`}
                   className="h-auto w-full"
@@ -171,6 +256,12 @@ function TestAreaScreen() {
                   {scoredAreas.map((area, index) => {
                     const linePoint = getWheelPoint(index, scoredAreas.length, wheelRadius);
                     const labelPoint = getWheelPoint(index, scoredAreas.length, wheelLabelRadius);
+                    const valuePoint = getWheelPoint(
+                      index,
+                      scoredAreas.length,
+                      wheelRadius * (area.score / 4)
+                    );
+                    const isPriority = priorityAreaKeys.has(area.key);
 
                     return (
                       <g key={area.key}>
@@ -179,19 +270,26 @@ function TestAreaScreen() {
                           y1={wheelCenter}
                           x2={linePoint.x}
                           y2={linePoint.y}
-                          stroke="rgba(255,255,255,0.1)"
-                          strokeWidth="1"
+                          stroke={isPriority ? "rgba(216,195,155,0.28)" : "rgba(255,255,255,0.1)"}
+                          strokeWidth={isPriority ? "1.6" : "1"}
                         />
                         <text
                           x={labelPoint.x}
                           y={labelPoint.y}
-                          fill="rgba(255,255,255,0.55)"
-                          fontSize="10"
+                          fill={isPriority ? "rgba(240,223,189,0.92)" : "rgba(255,255,255,0.72)"}
+                          fontSize="12"
+                          fontWeight={isPriority ? "600" : "500"}
                           textAnchor={labelPoint.x >= wheelCenter + 8 ? "start" : labelPoint.x <= wheelCenter - 8 ? "end" : "middle"}
                           dominantBaseline={labelPoint.y > wheelCenter + 20 ? "hanging" : labelPoint.y < wheelCenter - 20 ? "auto" : "middle"}
                         >
                           {area.title}
                         </text>
+                        <circle
+                          cx={valuePoint.x}
+                          cy={valuePoint.y}
+                          r={isPriority ? "4" : "2.5"}
+                          fill={isPriority ? "rgba(240,223,189,0.95)" : "rgba(255,255,255,0.6)"}
+                        />
                       </g>
                     );
                   })}
@@ -205,70 +303,75 @@ function TestAreaScreen() {
                   />
                 </svg>
               </div>
-            </div>
 
-            <div className="mt-8 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
-              <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-white/55">
-                Todas las áreas
-              </h2>
-
-              <div className="mt-4 space-y-3">
-                {sortedAreas.map((area) => (
-                  <div
-                    key={area.key}
-                    className="flex items-center justify-between gap-4 border-b border-white/6 pb-3 last:border-b-0 last:pb-0"
-                  >
-                    <span className="text-sm text-white/80 sm:text-base">
-                      {area.title}
-                    </span>
-                    <span className="text-sm font-medium text-[#d8c39b] sm:text-base">
-                      {area.score.toFixed(1)} / 4
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-[22px] border border-[#d8c39b]/18 bg-[linear-gradient(135deg,rgba(224,196,150,0.1),rgba(255,255,255,0.02))] p-4 sm:p-5">
-              <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-[#d8c39b]">
-                Áreas prioritarias
-              </h2>
-
-              <div className="mt-4 space-y-3">
+              <div className="mt-8 flex flex-wrap gap-3">
                 {priorityAreas.map((area) => (
                   <div
                     key={area.key}
-                    className="flex items-center justify-between gap-4"
+                    className="inline-flex items-center gap-2 rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.14),rgba(224,196,150,0.05))] px-3 py-2 text-sm shadow-[0_10px_30px_rgba(0,0,0,0.18)]"
                   >
-                    <span className="text-sm text-white/88 sm:text-base">
+                    <span className="text-white/90">
                       {area.title}
                     </span>
-                    <span className="text-sm font-medium text-white sm:text-base">
-                      {area.score.toFixed(1)} / 4
+                    <span className="text-[#d8c39b]">
+                      {getAreaPercentage(area.score)}%
                     </span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-6 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
+            <div className="mt-10 rounded-[24px] border border-white/8 bg-black/15 p-5 sm:p-7">
               <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-white/55">
                 Películas para tu momento
               </h2>
 
-              <div className="mt-4 space-y-3">
-                {recommendedMovies.map((movie) => (
-                  <article
-                    key={`${movie.areaKey}-${movie.title}`}
-                    className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4"
-                  >
-                    <div className="inline-flex rounded-full border border-[#d8c39b]/18 bg-[#d8c39b]/10 px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-[#d8c39b]">
-                      {movie.areaTitle}
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-white/60 sm:text-base sm:leading-7">
+                Una primera selección para acompañar justo las áreas que hoy piden más cuidado.
+              </p>
+
+              <div className="mt-8 space-y-8">
+                {recommendedMoviesByArea.map((area) => (
+                  <section key={area.key}>
+                    <div className="flex items-center gap-3">
+                      <div className="inline-flex rounded-full border border-[#d8c39b]/18 bg-[#d8c39b]/10 px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-[#d8c39b]">
+                        {area.title}
+                      </div>
+                      <span className="text-sm text-white/45">
+                        {area.percentage}%
+                      </span>
                     </div>
-                    <h3 className="mt-3 text-base font-medium text-white/90 sm:text-lg">
-                      {movie.title}
-                    </h3>
-                  </article>
+
+                    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {area.movies.map((movie) => (
+                        <article
+                          key={`${area.key}-${movie.title}`}
+                          className="overflow-hidden rounded-[20px] border border-white/8 bg-white/[0.03] shadow-[0_20px_60px_rgba(0,0,0,0.18)]"
+                        >
+                          <div className="flex min-h-[148px]">
+                            {movie.posterPath ? (
+                              <img
+                                src={`${TMDB_IMAGE_BASE_URL}${movie.posterPath}`}
+                                alt={`Poster de ${movie.title}`}
+                                className="h-[148px] w-[104px] shrink-0 object-cover"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="flex h-[148px] w-[104px] shrink-0 items-center justify-center bg-white/[0.04] text-center text-[0.68rem] uppercase tracking-[0.18em] text-white/35">
+                                Sin poster
+                              </div>
+                            )}
+
+                            <div className="flex flex-1 items-center p-4">
+                              <h3 className="text-base font-medium leading-6 text-white/90 sm:text-lg">
+                                {movie.title}
+                              </h3>
+                            </div>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             </div>
