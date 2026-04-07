@@ -204,6 +204,36 @@ function RecommendationCard({ movie }) {
   );
 }
 
+function ResultIntro() {
+  return (
+    <div className="mx-auto max-w-3xl text-center">
+      <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
+        CINE PARA CRECER
+      </p>
+
+      <h2 className="mx-auto max-w-2xl text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
+        Para ti, hoy
+      </h2>
+
+      <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-white/62 sm:text-lg">
+        Cuatro elecciones distintas, ordenadas con un criterio claro para este momento.
+      </p>
+    </div>
+  );
+}
+
+function CinematicBackground() {
+  return (
+    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0b0f18] via-[#07090e] to-[#05070b]" />
+      <div className="absolute left-1/2 top-[-14rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-amber-200/10 blur-3xl" />
+      <div className="absolute left-[-8rem] top-1/4 h-[24rem] w-[24rem] rounded-full bg-sky-400/10 blur-3xl" />
+      <div className="absolute bottom-[-14rem] right-[-10rem] h-[22rem] w-[22rem] rounded-full bg-orange-400/10 blur-3xl" />
+      <div className="absolute inset-0 bg-black/35" />
+    </div>
+  );
+}
+
 function TestAreaScreen() {
   const [state, setState] = useState({
     currentAreaIndex: 0,
@@ -308,24 +338,24 @@ function TestAreaScreen() {
   if (state.isComplete) {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0b0f18] via-[#07090e] to-[#05070b]" />
-          <div className="absolute left-1/2 top-[-14rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-amber-200/10 blur-3xl" />
-          <div className="absolute left-[-8rem] top-1/4 h-[24rem] w-[24rem] rounded-full bg-sky-400/10 blur-3xl" />
-          <div className="absolute bottom-[-10rem] right-[-6rem] h-[26rem] w-[26rem] rounded-full bg-orange-400/10 blur-3xl" />
-          <div className="absolute inset-0 bg-black/35" />
-        </div>
+        <CinematicBackground />
 
-        <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-14 sm:px-10 sm:py-16">
+        <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-14 pt-20 sm:px-10 sm:pb-16 sm:pt-24">
           <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-            <div className="text-center">
-              <h1 className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
+            <div className="mx-auto max-w-3xl pt-1 text-center sm:pt-2">
+              <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
+                RESULTADO DEL TEST
+              </p>
+              <h1 className="text-3xl font-semibold leading-[1.06] tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
                 Este es tu momento
               </h1>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
+                Una lectura serena de dónde estás hoy y de qué historias podrían acompañarte mejor ahora.
+              </p>
             </div>
 
-            <section className="mt-12">
-              <div className="mx-auto max-w-[440px]">
+            <section className="mt-14 rounded-[24px] border border-white/8 bg-black/12 px-4 py-8 sm:px-8 sm:py-10">
+              <div className="mx-auto max-w-[480px]">
                 <svg
                   viewBox={`0 0 ${wheelSize} ${wheelSize}`}
                   className="h-auto w-full"
@@ -450,20 +480,8 @@ function TestAreaScreen() {
               </div>
             </section>
 
-            <section className="mt-20">
-              <div className="mx-auto max-w-3xl text-center">
-                <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
-                  CINE PARA CRECER
-                </p>
-
-                <h2 className="mx-auto max-w-2xl text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
-                  Para ti, hoy
-                </h2>
-
-                <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-white/62 sm:text-lg">
-                  Cuatro elecciones distintas, ordenadas con un criterio claro para este momento.
-                </p>
-              </div>
+            <section className="mt-24 border-t border-white/8 pt-16 sm:mt-28 sm:pt-20">
+              <ResultIntro />
 
               <div className="mt-10 space-y-14">
                 {recommendedMoviesByArea.map((area) => (
@@ -496,13 +514,7 @@ function TestAreaScreen() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0b0f18] via-[#07090e] to-[#05070b]" />
-        <div className="absolute left-1/2 top-[-14rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-amber-200/10 blur-3xl" />
-        <div className="absolute left-[-8rem] top-1/4 h-[24rem] w-[24rem] rounded-full bg-sky-400/10 blur-3xl" />
-        <div className="absolute bottom-[-10rem] right-[-6rem] h-[26rem] w-[26rem] rounded-full bg-orange-400/10 blur-3xl" />
-        <div className="absolute inset-0 bg-black/35" />
-      </div>
+      <CinematicBackground />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-xl items-center px-6 py-14 sm:px-8 sm:py-16">
         <div className="w-full rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-7">
