@@ -7,6 +7,17 @@ const answerScores = {
   "A veces": 0.5,
   No: 0,
 };
+const moviesByArea = {
+  personal: ["The Secret Life of Walter Mitty"],
+  salud: ["Eat Pray Love"],
+  espiritualidad: ["Into the Wild"],
+  aventura: ["Wild"],
+  amor: ["Before Sunrise"],
+  familia: ["Little Miss Sunshine"],
+  amistad: ["The Intouchables"],
+  proposito: ["Soul"],
+  finanzas: ["The Pursuit of Happyness"],
+};
 const wheelSize = 360;
 const wheelCenter = wheelSize / 2;
 const wheelRadius = 104;
@@ -68,6 +79,13 @@ function TestAreaScreen() {
 
     return index === 2 && area.score === areas[1].score;
   });
+  const recommendedMovies = priorityAreas.flatMap((area) =>
+    (moviesByArea[area.key] || []).slice(0, 2).map((title) => ({
+      title,
+      areaTitle: area.title,
+      areaKey: area.key,
+    }))
+  );
 
   function handleAnswerSelect(questionIndex, option) {
     setState((currentState) => {
@@ -235,11 +253,24 @@ function TestAreaScreen() {
 
             <div className="mt-6 rounded-[22px] border border-white/8 bg-black/15 p-4 sm:p-5">
               <h2 className="text-sm font-medium uppercase tracking-[0.22em] text-white/55">
-                Tu recomendación
+                Películas para tu momento
               </h2>
-              <p className="mt-3 text-sm leading-6 text-white/68 sm:text-base sm:leading-7">
-                Aquí aparecerán películas alineadas con las áreas que más atención necesitan.
-              </p>
+
+              <div className="mt-4 space-y-3">
+                {recommendedMovies.map((movie) => (
+                  <article
+                    key={`${movie.areaKey}-${movie.title}`}
+                    className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4"
+                  >
+                    <div className="inline-flex rounded-full border border-[#d8c39b]/18 bg-[#d8c39b]/10 px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-[#d8c39b]">
+                      {movie.areaTitle}
+                    </div>
+                    <h3 className="mt-3 text-base font-medium text-white/90 sm:text-lg">
+                      {movie.title}
+                    </h3>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>
