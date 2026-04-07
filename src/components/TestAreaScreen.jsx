@@ -365,17 +365,17 @@ function TestAreaScreen() {
         <CinematicBackground />
 
         <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-14 pt-20 sm:px-10 sm:pb-16 sm:pt-24">
-          <div className="mx-auto max-w-3xl pt-1 text-center sm:pt-2">
-            <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
-              RESULTADO DEL TEST
-            </p>
-            <h1 className="text-3xl font-semibold leading-[1.06] tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
-              Este es tu momento
-            </h1>
-          </div>
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
+                RESULTADO DEL TEST
+              </p>
+              <h1 className="text-3xl font-semibold leading-[1.06] tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
+                Este es tu momento
+              </h1>
+            </div>
 
-          <div className="mt-12 rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-            <section className="rounded-[24px] border border-white/8 bg-black/12 px-4 py-8 sm:px-8 sm:py-10">
+            <section className="mt-12 rounded-[24px] border border-white/8 bg-black/12 px-4 py-8 sm:px-8 sm:py-10">
               <div className="mx-auto max-w-[560px]">
                 <svg
                   viewBox={`0 0 ${wheelSize} ${wheelSize}`}
@@ -503,7 +503,7 @@ function TestAreaScreen() {
           </div>
 
           <div className="mt-24 rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-            <section className="border-t border-white/8 pt-16 sm:pt-20">
+            <section className="pt-16 sm:pt-20">
               <ResultIntro />
 
               <div className="mt-10 space-y-14">
