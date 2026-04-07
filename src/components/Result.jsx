@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { recommendationsByMood } from "../data/recommendations";
 import {
   fetchMovieDetails,
@@ -6,6 +7,7 @@ import {
 } from "../services/tmdb";
 
 function Result({ mood, onBack }) {
+  const navigate = useNavigate();
   const recommendation = recommendationsByMood[mood];
   const movies = recommendation?.movies || [];
   const [displayMovies, setDisplayMovies] = useState(movies);
@@ -109,9 +111,11 @@ function Result({ mood, onBack }) {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
               {displayMovies.slice(0, 4).map((movie) => (
-                <article
+                <button
                   key={movie.id}
-                  className="rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-3.5"
+                  type="button"
+                  onClick={() => movie.tmdbId && navigate(`/movie/${movie.tmdbId}`)}
+                  className="text-left rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b] sm:p-3.5"
                 >
                   <div className="relative flex aspect-[2/3] items-end overflow-hidden rounded-[20px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-4">
                     {movie.image ? (
@@ -141,7 +145,7 @@ function Result({ mood, onBack }) {
                       {movie.reason}
                     </p>
                   </div>
-                </article>
+                </button>
               ))}
             </div>
           </div>

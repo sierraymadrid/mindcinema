@@ -4,6 +4,7 @@ import Hero from "./components/Hero";
 import QuickMood from "./components/QuickMood";
 import Result from "./components/Result";
 import Test from "./components/Test";
+import MovieDetail from "./components/MovieDetail";
 
 function HomeFlow() {
   const [screen, setScreen] = useState("hero");
@@ -44,6 +45,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomeFlow />} />
       <Route path="/test" element={<Test />} />
+      <Route path="/movie/:id" element={<MovieDetail />} />
     </Routes>
   );
 }

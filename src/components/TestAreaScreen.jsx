@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import lifeAreas from "../data/lifeAreas";
 import moviesByArea from "../data/deepRecommendations";
 import {
@@ -40,11 +41,16 @@ function scrollToArea(areaKey) {
   }
 }
 
-function RecommendationCard({ movie }) {
+function RecommendationCard({ movie, lifeArea }) {
   const [imageFailed, setImageFailed] = useState(!movie.posterPath);
+  const navigate = useNavigate();
 
   return (
-    <article className="rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.05]">
+    <button
+      type="button"
+      onClick={() => navigate(`/movie/${movie.tmdbId}`, { state: { lifeArea } })}
+      className="text-left rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
+    >
       <div className="relative flex aspect-[2/3] items-end overflow-hidden rounded-[20px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-4">
         {!imageFailed ? (
           <>
@@ -75,7 +81,7 @@ function RecommendationCard({ movie }) {
           {movie.title}
         </h3>
       </div>
-    </article>
+    </button>
   );
 }
 
@@ -451,6 +457,7 @@ function TestAreaScreen() {
                         <RecommendationCard
                           key={`${area.key}-${movie.title}-${movie.posterPath || "no-poster"}`}
                           movie={movie}
+                          lifeArea={area.title}
                         />
                       ))}
                     </div>
