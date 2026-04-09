@@ -6,6 +6,7 @@ import QuickResultScreen from "./components/QuickResultScreen";
 import QuickScreen from "./components/QuickScreen";
 import Test from "./components/Test";
 import TestResultScreen from "./components/TestResultScreen";
+import Layout from "./components/layout/Layout";
 
 function HomeScreen() {
   const navigate = useNavigate();
@@ -21,13 +22,15 @@ function HomeScreen() {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomeScreen />} />
-      <Route path="/quick" element={<QuickScreen />} />
-      <Route path="/quick/result" element={<QuickResultScreen />} />
-      <Route path="/test" element={<Test />} />
-      <Route path="/test/result" element={<TestResultScreen />} />
-      <Route path="/movie/:id" element={<MovieDetail />} />
-      <Route path="/about" element={<About />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/quick" element={<QuickScreen />} />
+        <Route path="/quick/result" element={<QuickResultScreen />} />
+        <Route path="/test" element={<Test />} />
+        <Route path="/test/result" element={<TestResultScreen />} />
+        <Route path="/movie/:id" element={<MovieDetail />} />
+        <Route path="/about" element={<About />} />
+      </Route>
     </Routes>
   );
 }
