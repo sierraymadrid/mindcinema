@@ -156,7 +156,7 @@ function MovieDetail() {
 
         {status === "ready" && movieDetail ? (
           <div className="space-y-12 sm:space-y-14">
-            <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur">
+            <section className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur">
               <div className="absolute inset-0">
                 {movieDetail.backdropUrl ? (
                   <img
@@ -171,51 +171,74 @@ function MovieDetail() {
                     className="h-full w-full object-cover object-center"
                   />
                 ) : null}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070b] via-[#05070b]/72 to-[#05070b]/28" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05070b] via-[#05070b]/76 to-[#05070b]/24" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#05070b]/92 via-[#05070b]/60 to-transparent" />
               </div>
 
-              <div className="relative z-10 min-h-[30rem] px-6 py-10 sm:min-h-[36rem] sm:px-8 sm:py-12 lg:min-h-[40rem]">
+              <div className="relative z-10 min-h-[34rem] px-6 py-8 sm:min-h-[40rem] sm:px-8 sm:py-10 lg:min-h-[44rem] lg:px-10">
                 <div className="flex min-h-[inherit] items-end">
-                <div className="max-w-3xl">
-                  <p className="text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
-                    CINE PARA CRECER
-                  </p>
+                  <div className="grid w-full gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-end lg:gap-10">
+                    <div className="hidden lg:block">
+                      <div className="w-[220px] rounded-[26px] border border-white/12 bg-[#0f131a]/78 p-3 shadow-[0_24px_80px_rgba(0,0,0,0.42)] backdrop-blur">
+                        <div className="relative aspect-[2/3] overflow-hidden rounded-[22px] border border-white/10 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13]">
+                          {movieDetail.posterUrl ? (
+                            <img
+                              src={movieDetail.posterUrl}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center">
+                              <span className="text-[0.68rem] uppercase tracking-[0.22em] text-white/35">
+                                MindCinema
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
 
-                  <h1 className="mt-5 text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
-                    {movieDetail.title}
-                  </h1>
+                    <div className="max-w-3xl">
+                      <p className="text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
+                        CINE PARA CRECER
+                      </p>
 
-                  <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/72 sm:text-base">
-                    <span>{movieDetail.releaseYear}</span>
-                    <span>{movieDetail.runtime}</span>
-                    <span>{movieDetail.rating} TMDB</span>
-                    {movieDetail.genres.map((genre) => (
-                      <span key={genre}>{genre}</span>
-                    ))}
+                      <h1 className="mt-5 text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
+                        {movieDetail.title}
+                      </h1>
+
+                      <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/72 sm:text-base">
+                        <span>{movieDetail.releaseYear}</span>
+                        <span>{movieDetail.runtime}</span>
+                        <span>{movieDetail.rating} TMDB</span>
+                        {movieDetail.genres.map((genre) => (
+                          <span key={genre}>{genre}</span>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          document
+                            .getElementById("watch-providers")
+                            ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                        }
+                        className="mt-8 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+                      >
+                        Ver dónde está disponible
+                      </button>
+                    </div>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      document
-                        .getElementById("watch-providers")
-                        ?.scrollIntoView({ behavior: "smooth", block: "start" })
-                    }
-                    className="mt-8 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
-                  >
-                    Donde verla
-                  </button>
-                </div>
                 </div>
               </div>
             </section>
 
-            <section className="grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
-              <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+            <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+              <div className="max-w-4xl">
                 <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
                   SINOPSIS
                 </p>
-                <p className="mt-4 max-w-3xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
+                <p className="mt-5 text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
                   {isOverviewExpanded ? movieDetail.overview : shortOverview}
                 </p>
                 {movieDetail.overview.length > shortOverview.length ? (
@@ -228,51 +251,51 @@ function MovieDetail() {
                     }
                     className="mt-4 text-sm text-white/60 transition hover:text-white"
                   >
-                    {isOverviewExpanded ? "Leer menos" : "Leer mas"}
+                    {isOverviewExpanded ? "Mostrar menos" : "Seguir leyendo"}
                   </button>
                 ) : null}
               </div>
+            </section>
 
-              <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                  REPARTO
-                </p>
-                <div className="-mx-1 mt-5 flex gap-4 overflow-x-auto px-1 pb-2">
-                  {movieDetail.cast.length ? (
-                    movieDetail.cast.map((actor) => (
-                      <button
-                        key={actor.id}
-                        type="button"
-                        className="min-w-[132px] rounded-[22px] border border-white/10 bg-[#0f131a] p-3 text-left transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-[#131922] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
-                      >
-                        <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13]">
-                          {actor.profileUrl ? (
-                            <img
-                              src={actor.profileUrl}
-                              alt=""
-                              className="h-full w-full object-cover"
-                              loading="lazy"
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center">
-                              <span className="text-[0.62rem] uppercase tracking-[0.2em] text-white/35">
-                                Actor
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-white/84">
-                          {actor.name}
-                        </p>
-                      </button>
-                    ))
-                  ) : (
-                    <p className="text-base leading-7 text-white/62">
-                      Reparto no disponible.
-                    </p>
-                  )}
+            <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+              <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                REPARTO PRINCIPAL
+              </p>
+              {movieDetail.cast.length ? (
+                <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                  {movieDetail.cast.map((actor) => (
+                    <button
+                      key={actor.id}
+                      type="button"
+                      className="rounded-[22px] border border-white/10 bg-[#0f131a] p-3 text-left transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-[#131922] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
+                    >
+                      <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13]">
+                        {actor.profileUrl ? (
+                          <img
+                            src={actor.profileUrl}
+                            alt=""
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <span className="text-[0.62rem] uppercase tracking-[0.2em] text-white/35">
+                              Actor
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <p className="mt-3 text-sm leading-6 text-white/84">
+                        {actor.name}
+                      </p>
+                    </button>
+                  ))}
                 </div>
-              </div>
+              ) : (
+                <p className="mt-5 text-base leading-7 text-white/62">
+                  Reparto no disponible.
+                </p>
+              )}
             </section>
 
             <section
@@ -280,45 +303,50 @@ function MovieDetail() {
               className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8"
             >
               <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                DONDE VERLA
+                DÓNDE VERLA
               </p>
 
               {movieDetail.watchProviders.length ? (
-                <div className="mt-5 flex flex-wrap gap-4">
-                  {movieDetail.watchProviders.map((provider) => (
+                <>
+                  <div className="mt-5 flex flex-wrap gap-4">
+                    {movieDetail.watchProviders.map((provider) => (
+                      <div
+                        key={provider.provider_id}
+                        className="rounded-2xl border border-white/10 bg-[#0f131a] px-4 py-4"
+                      >
+                        {provider.logo_path ? (
+                          <img
+                            src={`${TMDB_IMAGE_BASE_URL}${provider.logo_path}`}
+                            alt={provider.provider_name}
+                            className="h-12 w-12 rounded-xl object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-[0.6rem] uppercase tracking-[0.18em] text-white/35">
+                            N/A
+                          </div>
+                        )}
+                        <p className="mt-3 max-w-[84px] text-xs leading-5 text-white/72">
+                          {provider.provider_name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {movieDetail.watchLink ? (
                     <a
-                      key={provider.provider_id}
-                      href={movieDetail.watchLink || "#"}
-                      target={movieDetail.watchLink ? "_blank" : undefined}
-                      rel={movieDetail.watchLink ? "noreferrer" : undefined}
-                      className="rounded-2xl border border-white/10 bg-[#0f131a] px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-[#131922]"
-                      onClick={(event) => {
-                        if (!movieDetail.watchLink) {
-                          event.preventDefault();
-                        }
-                      }}
+                      href={movieDetail.watchLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-6 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
                     >
-                      {provider.logo_path ? (
-                        <img
-                          src={`${TMDB_IMAGE_BASE_URL}${provider.logo_path}`}
-                          alt={provider.provider_name}
-                          className="h-12 w-12 rounded-xl object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-[0.6rem] uppercase tracking-[0.18em] text-white/35">
-                          N/A
-                        </div>
-                      )}
-                      <p className="mt-3 max-w-[84px] text-xs leading-5 text-white/72">
-                        {provider.provider_name}
-                      </p>
+                      Ver opciones para verla
                     </a>
-                  ))}
-                </div>
+                  ) : null}
+                </>
               ) : (
                 <p className="mt-5 text-base leading-7 text-white/62">
-                  No disponible en tu region.
+                  No disponible en tu región.
                 </p>
               )}
             </section>
@@ -326,7 +354,7 @@ function MovieDetail() {
             {movieDetail.trailerKey ? (
               <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
                 <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                  TRAILER
+                  TRÁILER
                 </p>
                 <div className="mt-5 overflow-hidden rounded-[24px] border border-white/10">
                   <div className="aspect-video">
@@ -343,17 +371,6 @@ function MovieDetail() {
             ) : null}
 
             <section className="flex flex-wrap items-center gap-3">
-              {movieDetail.imdbUrl ? (
-                <a
-                  href={movieDetail.imdbUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-white/52 transition hover:text-white"
-                >
-                  Ver en IMDb
-                </a>
-              ) : null}
-
               <button
                 type="button"
                 onClick={() => navigate(-1)}

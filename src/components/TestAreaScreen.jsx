@@ -301,16 +301,18 @@ function TestAreaScreen() {
 
         <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-14 pt-20 sm:px-10 sm:pb-16 sm:pt-24">
           <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="sticky top-4 z-20 -mx-2 rounded-[24px] bg-[linear-gradient(180deg,rgba(5,7,11,0.96),rgba(5,7,11,0.82),rgba(5,7,11,0))] px-2 pb-8 pt-1 sm:-mx-3 sm:px-3">
+              <div className="mx-auto max-w-3xl text-center">
               <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
                 RESULTADO DEL TEST
               </p>
               <h1 className="text-3xl font-semibold leading-[1.06] tracking-[-0.03em] text-white sm:text-4xl md:text-[3.25rem]">
                 Este es tu momento
               </h1>
+              </div>
             </div>
 
-            <section className="mt-12 rounded-[24px] border border-white/8 bg-black/12 px-4 py-8 sm:px-8 sm:py-10">
+            <section className="mt-6 rounded-[24px] border border-white/8 bg-black/12 px-4 py-8 sm:px-8 sm:py-10">
               <div className="mx-auto max-w-[560px]">
                 <svg
                   viewBox={`0 0 ${wheelSize} ${wheelSize}`}
