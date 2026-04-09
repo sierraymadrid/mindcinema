@@ -1,47 +1,289 @@
-function Hero({ onQuickStart, onExploreMoment }) {
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import lifeAreas from "../data/lifeAreas";
+import moviesByArea from "../data/deepRecommendations";
+import { fetchMovieDetails, TMDB_IMAGE_BASE_URL } from "../services/tmdb";
+import Container from "./layout/Container";
+
+const rowMovieCount = 9;
+
+function HomeMovieCard({ movie }) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0b0f18] via-[#07090e] to-[#05070b]" />
-        <div className="absolute left-1/2 top-[-14rem] h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-amber-200/10 blur-3xl" />
-        <div className="absolute left-[-8rem] top-1/4 h-[24rem] w-[24rem] rounded-full bg-sky-400/10 blur-3xl" />
-        <div className="absolute bottom-[-10rem] right-[-6rem] h-[26rem] w-[26rem] rounded-full bg-orange-400/10 blur-3xl" />
-        <div className="absolute inset-0 bg-black/30" />
+    <Link
+      to={`/movie/${movie.tmdbId}`}
+      className="group block w-[130px] shrink-0 transition duration-300 hover:-translate-y-0.5 sm:w-[140px] md:w-[150px] lg:w-[155px]"
+    >
+      <div className="relative aspect-[2/3] overflow-hidden rounded-[12px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
+        {movie.posterPath ? (
+          <img
+            src={`${TMDB_IMAGE_BASE_URL}${movie.posterPath}`}
+            alt=""
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <span className="text-[0.6rem] uppercase tracking-[0.22em] text-white/28">
+              MindCinema
+            </span>
+          </div>
+        )}
       </div>
 
-      <section className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center justify-center px-6 py-20 sm:px-10">
-        <div className="w-full max-w-4xl text-center">
-          <p className="mb-6 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
-            CINE PARA CRECER
-          </p>
+      <div className="pt-2.5">
+        <h3 className="line-clamp-2 text-[0.8rem] font-semibold leading-[1.15] text-white/95 sm:text-[0.84rem]">
+          {movie.title}
+        </h3>
+      </div>
+    </Link>
+  );
+}
 
-          <h1 className="mx-auto max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.04em] text-white sm:text-5xl md:text-6xl md:leading-[1.02] lg:text-7xl">
-            La película adecuada, en el momento adecuado
-          </h1>
+function Hero({ onQuickStart, onExploreMoment }) {
+  const [moviePostersById, setMoviePostersById] = useState({});
 
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
-            Para esas noches en las que no sabes qué ver, pero sientes que quieres algo con sentido.
-          </p>
+  const movieCatalog = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          Object.values(moviesByArea)
+            .flat()
+            .map((movie) => [movie.tmdbId, movie])
+        ).values()
+      ),
+    []
+  );
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <button
-              type="button"
-              onClick={onQuickStart}
-              className="group inline-flex min-w-[220px] items-center justify-center rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-7 py-3.5 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))] hover:shadow-[0_18px_60px_rgba(0,0,0,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
+  const featuredAreas = useMemo(
+    () =>
+      lifeAreas.map((area) => {
+        const primaryMovies = (moviesByArea[area.key] || []).slice(0, 3);
+        const primaryMovieIds = new Set(primaryMovies.map((movie) => movie.tmdbId));
+        const fillerMovies = movieCatalog
+          .filter((movie) => !primaryMovieIds.has(movie.tmdbId))
+          .slice(0, Math.max(rowMovieCount - primaryMovies.length, 0));
+        const rowMovies = [...primaryMovies, ...fillerMovies].slice(0, rowMovieCount);
+
+        return {
+          ...area,
+          displayTitle:
+            area.key === "personal" ? "Desarrollo personal" : area.title,
+          movies: rowMovies.map((movie) => ({
+            ...movie,
+            posterPath: moviePostersById[movie.tmdbId] || null,
+          })),
+        };
+      }),
+    [movieCatalog, moviePostersById]
+  );
+
+  const featuredTmdbIds = useMemo(
+    () =>
+      movieCatalog
+        .map((movie) => movie.tmdbId)
+        .filter(Boolean),
+    [movieCatalog]
+  );
+  const featuredTmdbIdsKey = featuredTmdbIds.join(",");
+  const heroBackdropMovies = featuredAreas[0]?.movies.slice(0, 3) || [];
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function enrichPosters() {
+      const missingIds = featuredTmdbIds.filter(
+        (tmdbId) => !(tmdbId in moviePostersById)
+      );
+
+      if (!missingIds.length) {
+        return;
+      }
+
+      const posterEntries = await Promise.all(
+        missingIds.map(async (tmdbId) => {
+          try {
+            const details = await fetchMovieDetails(tmdbId);
+            return [tmdbId, details?.posterPath || null];
+          } catch {
+            return [tmdbId, null];
+          }
+        })
+      );
+
+      if (!isCancelled) {
+        setMoviePostersById((currentPosters) => ({
+          ...currentPosters,
+          ...Object.fromEntries(posterEntries),
+        }));
+      }
+    }
+
+    enrichPosters();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [featuredTmdbIds, featuredTmdbIdsKey, moviePostersById]);
+
+  return (
+    <main className="relative overflow-hidden bg-[#05070b] text-white">
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0b0f18] via-[#07090e] to-[#05070b]" />
+        <div className="absolute left-1/4 top-[-8rem] h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-amber-300/6 blur-[5rem]" />
+        <div className="absolute right-1/4 top-1/3 h-[24rem] w-[24rem] translate-x-1/2 rounded-full bg-sky-400/5 blur-[5rem]" />
+        <div className="absolute bottom-[-4rem] left-1/3 h-[20rem] w-[20rem] translate-x-1/2 rounded-full bg-orange-400/4 blur-[4rem]" />
+        <div className="absolute inset-x-0 top-0 h-[40rem] bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06),transparent_70%)]" />
+
+        {heroBackdropMovies.map((movie, index) => {
+          const positions = [
+            "left-[8%] top-20 rotate-[-5deg] scale-95",
+            "left-1/2 top-12 -translate-x-1/2 rotate-[2deg]",
+            "right-[8%] top-24 rotate-[6deg] scale-95",
+          ];
+
+          return (
+            <div
+              key={`hero-poster-${movie.tmdbId}`}
+              className={`absolute hidden h-[18rem] w-[12rem] overflow-hidden rounded-[20px] border border-white/5 opacity-12 blur-[3px] lg:block ${positions[index] || ""}`}
             >
-              Recomendación rápida
-            </button>
+              {movie.posterPath ? (
+                <img
+                  src={`${TMDB_IMAGE_BASE_URL}${movie.posterPath}`}
+                  alt=""
+                  className="h-full w-full object-cover brightness-50 saturate-0"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="h-full w-full bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))]" />
+              )}
+            </div>
+          );
+        })}
 
-            <button
-              type="button"
-              onClick={onExploreMoment}
-              className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-7 py-3.5 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-            >
-              Explorar mi momento
-            </button>
-          </div>
-        </div>
-      </section>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#05070b]/10 via-[#05070b]/30 to-[#05070b]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05070b] via-[#05070b]/70 to-[#05070b]/10" />
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+
+      <div className="relative z-10 py-14 sm:py-16">
+        <section className="py-12 sm:py-16">
+          <Container>
+            <div className="mx-auto max-w-4xl text-center">
+              <p className="mb-6 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
+                CINE PARA CRECER
+              </p>
+
+              <h1 className="mx-auto max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.04em] text-white sm:text-5xl md:text-6xl md:leading-[1.02] lg:text-7xl">
+                La película adecuada, en el momento adecuado
+              </h1>
+
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
+                Para esas noches en las que no sabes qué ver, pero sientes que quieres algo con sentido.
+              </p>
+
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={onQuickStart}
+                  className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-7 py-3.5 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))] hover:shadow-[0_18px_60px_rgba(0,0,0,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
+                >
+                  Recomendación rápida
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onExploreMoment}
+                  className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-7 py-3.5 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                >
+                  Test de áreas de vida
+                </button>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        <section className="py-10 sm:py-12">
+          <Container>
+            <div className="space-y-10 sm:space-y-12">
+              {featuredAreas.map((area) => (
+                <section key={area.key}>
+                  <div className="mb-5 flex items-center justify-between gap-4">
+                    <h3 className="text-[1.85rem] font-semibold tracking-tight text-white sm:text-[2.1rem] lg:text-[2.25rem]">
+                      {area.displayTitle}
+                    </h3>
+
+                    <button
+                      type="button"
+                      onClick={onExploreMoment}
+                      className="shrink-0 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/75 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    >
+                      Ver todo
+                    </button>
+                  </div>
+
+                  <div className="flex gap-2 overflow-x-auto pb-3 no-scrollbar sm:gap-2.5">
+                    {area.movies.map((movie) => (
+                      <HomeMovieCard
+                        key={`${area.key}-${movie.tmdbId}`}
+                        movie={movie}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        <section className="py-8 sm:py-10">
+          <Container>
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+              <div className="max-w-2xl">
+                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                  MISIÓN
+                </p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                  Elegir qué ver con sentido
+                </h2>
+                <p className="mt-4 text-base leading-7 text-white/62 sm:text-lg">
+                  MindCinema es una app de recomendación de películas orientada al
+                  momento vital y emocional del usuario: películas para acompañar tu
+                  momento, no para perderte en un catálogo.
+                </p>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        <section className="py-8 sm:py-10">
+          <Container>
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 text-center shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+              <p className="mx-auto max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
+                Elige una recomendación rápida si quieres resolverlo ya, o entra en el
+                test si prefieres una lectura más completa.
+              </p>
+
+              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={onQuickStart}
+                  className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-7 py-3.5 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+                >
+                  Probar recomendación rápida
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onExploreMoment}
+                  className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-7 py-3.5 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
+                >
+                  Hacer el test
+                </button>
+              </div>
+            </div>
+          </Container>
+        </section>
+      </div>
     </main>
   );
 }
