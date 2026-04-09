@@ -11,7 +11,6 @@ function normalizeMovieDetail(data, fallbackState) {
     return null;
   }
 
-  const director = data.credits?.crew?.find((person) => person.job === "Director");
   const cast = (data.credits?.cast || []).slice(0, 5);
   const trailer = (data.videos?.results || []).find(
     (video) => video.site === "YouTube" && video.type === "Trailer"
@@ -46,20 +45,20 @@ function normalizeMovieDetail(data, fallbackState) {
         ? `${TMDB_BACKDROP_BASE_URL}${data.poster_path}`
         : null,
     posterUrl: data.poster_path ? `${TMDB_IMAGE_BASE_URL}${data.poster_path}` : null,
-    director: director?.name || "No disponible",
-    cast: cast.map((person) => person.name),
-    originalLanguage: data.original_language
-      ? data.original_language.toUpperCase()
-      : "—",
+    cast: cast.map((person) => ({
+      id: person.id,
+      name: person.name,
+      profileUrl: person.profile_path
+        ? `${TMDB_IMAGE_BASE_URL}${person.profile_path}`
+        : null,
+    })),
     watchProviders,
     watchRegion: selectedRegion,
+    watchLink: regionProviders?.link || null,
     trailerKey: trailer?.key || null,
     imdbUrl: data.external_ids?.imdb_id
       ? `https://www.imdb.com/title/${data.external_ids.imdb_id}/`
       : null,
-    whyText: fallbackState?.lifeArea
-      ? `Una historia que conecta con tu momento en ${fallbackState.lifeArea}.`
-      : "Una historia que puede acompañar el momento que estás viviendo ahora.",
   };
 }
 
@@ -156,26 +155,27 @@ function MovieDetail() {
         ) : null}
 
         {status === "ready" && movieDetail ? (
-          <div className="space-y-10">
+          <div className="space-y-12 sm:space-y-14">
             <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur">
               <div className="absolute inset-0">
                 {movieDetail.backdropUrl ? (
                   <img
                     src={movieDetail.backdropUrl}
                     alt=""
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover object-center"
                   />
                 ) : movieDetail.posterUrl ? (
                   <img
                     src={movieDetail.posterUrl}
                     alt=""
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover object-center"
                   />
                 ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#05070b] via-[#05070b]/72 to-[#05070b]/28" />
               </div>
 
-              <div className="relative z-10 px-6 py-10 sm:px-8 sm:py-12">
+              <div className="relative z-10 min-h-[30rem] px-6 py-10 sm:min-h-[36rem] sm:px-8 sm:py-12 lg:min-h-[40rem]">
+                <div className="flex min-h-[inherit] items-end">
                 <div className="max-w-3xl">
                   <p className="text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
                     CINE PARA CRECER
@@ -206,19 +206,11 @@ function MovieDetail() {
                     Donde verla
                   </button>
                 </div>
+                </div>
               </div>
             </section>
 
-            <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-              <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                POR QUE ESTA PELICULA
-              </p>
-              <p className="mt-4 max-w-2xl text-lg leading-8 text-white/86">
-                {movieDetail.whyText}
-              </p>
-            </section>
-
-            <section className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(320px,1fr)]">
+            <section className="grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
               <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
                 <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
                   SINOPSIS
@@ -243,13 +235,42 @@ function MovieDetail() {
 
               <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
                 <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                  FICHA RAPIDA
+                  REPARTO
                 </p>
-                <div className="mt-5 space-y-4 text-sm leading-6 text-white/72 sm:text-base">
-                  <p><span className="text-white/92">Director:</span> {movieDetail.director}</p>
-                  <p><span className="text-white/92">Actores:</span> {movieDetail.cast.join(", ") || "No disponible"}</p>
-                  <p><span className="text-white/92">Duracion:</span> {movieDetail.runtime}</p>
-                  <p><span className="text-white/92">Idioma original:</span> {movieDetail.originalLanguage}</p>
+                <div className="-mx-1 mt-5 flex gap-4 overflow-x-auto px-1 pb-2">
+                  {movieDetail.cast.length ? (
+                    movieDetail.cast.map((actor) => (
+                      <button
+                        key={actor.id}
+                        type="button"
+                        className="min-w-[132px] rounded-[22px] border border-white/10 bg-[#0f131a] p-3 text-left transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-[#131922] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
+                      >
+                        <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13]">
+                          {actor.profileUrl ? (
+                            <img
+                              src={actor.profileUrl}
+                              alt=""
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center">
+                              <span className="text-[0.62rem] uppercase tracking-[0.2em] text-white/35">
+                                Actor
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <p className="mt-3 text-sm leading-6 text-white/84">
+                          {actor.name}
+                        </p>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="text-base leading-7 text-white/62">
+                      Reparto no disponible.
+                    </p>
+                  )}
                 </div>
               </div>
             </section>
@@ -265,9 +286,17 @@ function MovieDetail() {
               {movieDetail.watchProviders.length ? (
                 <div className="mt-5 flex flex-wrap gap-4">
                   {movieDetail.watchProviders.map((provider) => (
-                    <div
+                    <a
                       key={provider.provider_id}
-                      className="rounded-2xl border border-white/10 bg-[#0f131a] px-4 py-4"
+                      href={movieDetail.watchLink || "#"}
+                      target={movieDetail.watchLink ? "_blank" : undefined}
+                      rel={movieDetail.watchLink ? "noreferrer" : undefined}
+                      className="rounded-2xl border border-white/10 bg-[#0f131a] px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-[#131922]"
+                      onClick={(event) => {
+                        if (!movieDetail.watchLink) {
+                          event.preventDefault();
+                        }
+                      }}
                     >
                       {provider.logo_path ? (
                         <img
@@ -284,7 +313,7 @@ function MovieDetail() {
                       <p className="mt-3 max-w-[84px] text-xs leading-5 text-white/72">
                         {provider.provider_name}
                       </p>
-                    </div>
+                    </a>
                   ))}
                 </div>
               ) : (
@@ -313,13 +342,13 @@ function MovieDetail() {
               </section>
             ) : null}
 
-            <section className="flex flex-wrap gap-3">
+            <section className="flex flex-wrap items-center gap-3">
               {movieDetail.imdbUrl ? (
                 <a
                   href={movieDetail.imdbUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+                  className="text-sm text-white/52 transition hover:text-white"
                 >
                   Ver en IMDb
                 </a>
