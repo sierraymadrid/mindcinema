@@ -1,40 +1,18 @@
-import { useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import About from "./components/About";
 import Hero from "./components/Hero";
-import QuickMood from "./components/QuickMood";
-import Result from "./components/Result";
-import Test from "./components/Test";
 import MovieDetail from "./components/MovieDetail";
+import QuickResultScreen from "./components/QuickResultScreen";
+import QuickScreen from "./components/QuickScreen";
+import Test from "./components/Test";
+import TestResultScreen from "./components/TestResultScreen";
 
-function HomeFlow() {
-  const [screen, setScreen] = useState("hero");
-  const [selectedMood, setSelectedMood] = useState("");
+function HomeScreen() {
   const navigate = useNavigate();
-
-  if (screen === "result") {
-    return (
-      <Result
-        mood={selectedMood}
-        onBack={() => setScreen("quickMood")}
-      />
-    );
-  }
-
-  if (screen === "quickMood") {
-    return (
-      <QuickMood
-        onBack={() => setScreen("hero")}
-        onMoodSelect={(mood) => {
-          setSelectedMood(mood);
-          setScreen("result");
-        }}
-      />
-    );
-  }
 
   return (
     <Hero
-      onQuickStart={() => setScreen("quickMood")}
+      onQuickStart={() => navigate("/quick")}
       onExploreMoment={() => navigate("/test")}
     />
   );
@@ -43,9 +21,13 @@ function HomeFlow() {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomeFlow />} />
+      <Route path="/" element={<HomeScreen />} />
+      <Route path="/quick" element={<QuickScreen />} />
+      <Route path="/quick/result" element={<QuickResultScreen />} />
       <Route path="/test" element={<Test />} />
+      <Route path="/test/result" element={<TestResultScreen />} />
       <Route path="/movie/:id" element={<MovieDetail />} />
+      <Route path="/about" element={<About />} />
     </Routes>
   );
 }
