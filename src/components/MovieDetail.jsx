@@ -6,6 +6,7 @@ import {
   TMDB_BACKDROP_BASE_URL,
   TMDB_IMAGE_BASE_URL,
 } from "../services/tmdb";
+import { getAreaMovieArchive } from "../recommendations/areaRecommendations";
 import {
   areaTitleToKey,
   getAreaDisplayTitle,
@@ -59,8 +60,8 @@ function ProviderGroup({ title, providers }) {
   );
 }
 
-const movieAreaIndex = Object.entries(moviesByArea).reduce((accumulator, [areaKey, movies]) => {
-  movies.forEach((movie) => {
+const movieAreaIndex = Object.keys(moviesByArea).reduce((accumulator, areaKey) => {
+  getAreaMovieArchive(areaKey).forEach((movie) => {
     if (!(movie.tmdbId in accumulator)) {
       accumulator[movie.tmdbId] = [];
     }

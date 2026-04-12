@@ -1,5 +1,17 @@
 import moviesByArea from "../data/deepRecommendations";
 
+function normalizeAreaEntry(areaEntry) {
+  if (Array.isArray(areaEntry)) {
+    return areaEntry;
+  }
+
+  if (areaEntry?.movies && Array.isArray(areaEntry.movies)) {
+    return areaEntry.movies;
+  }
+
+  return [];
+}
+
 function dedupeMoviesByTmdbId(movies) {
   return Array.from(
     new Map(
@@ -11,7 +23,7 @@ function dedupeMoviesByTmdbId(movies) {
 }
 
 function getAreaMovies(areaKey) {
-  return moviesByArea[areaKey] || [];
+  return normalizeAreaEntry(moviesByArea[areaKey]);
 }
 
 function fillWithCatalog(primaryMovies, catalog, limit) {
@@ -32,7 +44,9 @@ export function getAreaMovieArchive(areaKey) {
 }
 
 export function getAreaMovieCatalog() {
-  return dedupeMoviesByTmdbId(Object.values(moviesByArea).flat());
+  return dedupeMoviesByTmdbId(
+    Object.values(moviesByArea).flatMap((areaEntry) => normalizeAreaEntry(areaEntry))
+  );
 }
 
 export function getHomeAreaMovies(areaKey, options = {}) {

@@ -7,6 +7,7 @@ function MovieCard({ areaKey, areaTitle, movie, layout }) {
     layout === "row"
       ? "w-[130px] shrink-0 sm:w-[140px] md:w-[150px] lg:w-[155px]"
       : "w-full";
+  const contentSpacingClasses = layout === "row" ? "pt-3" : "pt-0";
 
   return (
     <Link
@@ -34,11 +35,13 @@ function MovieCard({ areaKey, areaTitle, movie, layout }) {
         )}
       </div>
 
-      <div className="pt-3">
-        <h3 className="line-clamp-2 text-[0.84rem] font-semibold leading-[1.2] text-white/95 sm:text-[0.9rem]">
-          {movie.title}
-        </h3>
-      </div>
+      {layout === "row" ? (
+        <div className={contentSpacingClasses}>
+          <h3 className="line-clamp-2 text-[0.84rem] font-semibold leading-[1.2] text-white/95 sm:text-[0.9rem]">
+            {movie.title}
+          </h3>
+        </div>
+      ) : null}
     </Link>
   );
 }
@@ -58,7 +61,7 @@ function MovieGrid({
     : "rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8";
   const listClasses = isRow
     ? "mt-6 flex gap-2 overflow-x-auto pb-3 no-scrollbar sm:gap-2.5"
-    : "mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4";
+    : "mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-y-10 lg:grid-cols-4 lg:gap-y-12";
 
   return (
     <section className={sectionClasses}>

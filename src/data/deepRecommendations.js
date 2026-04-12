@@ -1,9 +1,44 @@
 export const moviesByArea = {
-  personal: [
-    { title: "The Secret Life of Walter Mitty", tmdbId: 116745 },
-    { title: "Good Will Hunting", tmdbId: 489 },
-    { title: "Paterson", tmdbId: 326285 },
-  ],
+  personal: {
+    movies: [
+      { title: "Good Will Hunting", tmdbId: 489, tier: "featured", active: true },
+      { title: "Paterson", tmdbId: 370755, tier: "featured", active: true },
+      { title: "Dead Poets Society", tmdbId: 207, tier: "featured", active: true },
+      { title: "Lady Bird", tmdbId: 391713, tier: "featured", active: true },
+      { title: "Frances Ha", tmdbId: 121986, tier: "core", active: true },
+      { title: "Eighth Grade", tmdbId: 489925, tier: "core", active: true },
+      { title: "The Edge of Seventeen", tmdbId: 376660, tier: "core", active: true },
+      { title: "Columbus", tmdbId: 414453, tier: "core", active: true },
+      {
+        title: "The Worst Person in the World",
+        tmdbId: 660120,
+        tier: "core",
+        active: true,
+      },
+      { title: "Billy Elliot", tmdbId: 71, tier: "core", active: true },
+      {
+        title: "The Perks of Being a Wallflower",
+        tmdbId: 84892,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "Lars and the Real Girl",
+        tmdbId: 6615,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "The Spectacular Now",
+        tmdbId: 157386,
+        tier: "core",
+        active: true,
+      },
+      { title: "The Way Way Back", tmdbId: 147773, tier: "archive", active: true },
+      { title: "Garden State", tmdbId: 401, tier: "archive", active: true },
+      { title: "The Station Agent", tmdbId: 2056, tier: "archive", active: true },
+    ],
+  },
   salud: [
     { title: "Eat Pray Love", tmdbId: 38167 },
     { title: "Perfect Days", tmdbId: 976893 },
@@ -17,6 +52,7 @@ export const moviesByArea = {
   aventura: [
     { title: "Wild", tmdbId: 228970 },
     { title: "Tracks", tmdbId: 203819 },
+    // Pending editorial review: move Walter Mitty here in a later phase.
     { title: "The Secret Life of Walter Mitty", tmdbId: 116745 },
   ],
   amor: [
