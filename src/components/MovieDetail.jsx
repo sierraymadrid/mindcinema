@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import lifeAreas from "../data/lifeAreas";
 import moviesByArea from "../data/deepRecommendations";
 import {
   fetchMovieDetailPage,
   TMDB_BACKDROP_BASE_URL,
   TMDB_IMAGE_BASE_URL,
 } from "../services/tmdb";
+import {
+  areaTitleToKey,
+  getAreaDisplayTitle,
+  getAreaPath,
+  lifeAreaByKey,
+} from "../utils/lifeAreas";
 
 function sortProvidersByPriority(providers = []) {
   return [...providers].sort(
@@ -54,14 +59,6 @@ function ProviderGroup({ title, providers }) {
   );
 }
 
-const areaLabelOverrides = {
-  personal: "Desarrollo personal",
-};
-
-const lifeAreaByKey = Object.fromEntries(lifeAreas.map((area) => [area.key, area]));
-const areaTitleToKey = Object.fromEntries(
-  lifeAreas.map((area) => [area.title.toLowerCase(), area.key])
-);
 const movieAreaIndex = Object.entries(moviesByArea).reduce((accumulator, [areaKey, movies]) => {
   movies.forEach((movie) => {
     if (!(movie.tmdbId in accumulator)) {
@@ -85,7 +82,7 @@ function formatLifeArea(areaKey) {
 
   return {
     key: area.key,
-    title: areaLabelOverrides[area.key] || area.title,
+    title: getAreaDisplayTitle(area),
   };
 }
 
@@ -383,7 +380,7 @@ function MovieDetail() {
                   {movieDetail.lifeAreas.map((area) => (
                     <Link
                       key={area.key}
-                      to={`/areas/${area.key}`}
+                      to={getAreaPath(area.key)}
                       className="inline-flex rounded-full border border-[#d8c39b]/16 bg-[#d8c39b]/7 px-4 py-2 text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#dcc79f] transition hover:border-[#d8c39b]/34 hover:bg-[#d8c39b]/12 hover:text-[#ead9b8]"
                     >
                       {area.title}

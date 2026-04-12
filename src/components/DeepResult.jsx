@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import lifeAreas from "../data/lifeAreas";
-import moviesByArea from "../data/deepRecommendations";
 import { fetchMovieDetails, TMDB_IMAGE_BASE_URL } from "../services/tmdb";
+import {
+  decorateAreaMoviesWithPosters,
+  getAreaMovieIds,
+  getDeepAreaMovies,
+} from "../recommendations/areaRecommendations";
 
 const wheelSize = 420;
 const wheelCenter = wheelSize / 2;
@@ -190,17 +194,14 @@ function DeepResult({ answersByArea }) {
   const recommendedMoviesByArea = priorityAreas.map((area) => ({
     ...area,
     percentage: getAreaPercentage(area.score),
-    movies: (moviesByArea[area.key] || []).slice(0, 3).map((movie) => ({
-      ...movie,
-      posterPath: moviePostersById[movie.tmdbId] || null,
-    })),
+    movies: decorateAreaMoviesWithPosters(
+      getDeepAreaMovies(area.key, { limit: 3 }),
+      moviePostersById
+    ),
   }));
 
   const recommendedTmdbIds = priorityAreas.flatMap((area) =>
-    (moviesByArea[area.key] || [])
-      .slice(0, 3)
-      .map((movie) => movie.tmdbId)
-      .filter(Boolean)
+    getAreaMovieIds(area.key, { scope: "deep", limit: 3 })
   );
   const recommendedTmdbIdsKey = recommendedTmdbIds.join(",");
   const hasRecommendations = recommendedMoviesByArea.some((area) => area.movies.length);

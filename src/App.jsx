@@ -31,7 +31,7 @@ function App() {
         <Route path="/test" element={<Test />} />
         <Route path="/test/result" element={<TestResultScreen />} />
         <Route path="/movie/:id" element={<MovieDetail />} />
-        <Route path="/areas/:key" element={<AreaDetail />} />
+        <Route path="/areas/:slug" element={<AreaDetail />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotFound />} />
       </Route>

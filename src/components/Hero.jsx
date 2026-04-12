@@ -1,77 +1,34 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import lifeAreas from "../data/lifeAreas";
-import moviesByArea from "../data/deepRecommendations";
 import { fetchMovieDetails, TMDB_IMAGE_BASE_URL } from "../services/tmdb";
+import MovieGrid from "./MovieGrid";
 import Container from "./layout/Container";
+import {
+  decorateAreaMoviesWithPosters,
+  getAreaMovieCatalog,
+  getHomeAreaMovies,
+} from "../recommendations/areaRecommendations";
+import { getAreaDisplayTitle, getAreaPath } from "../utils/lifeAreas";
 
 const rowMovieCount = 9;
-
-function HomeMovieCard({ movie }) {
-  return (
-    <Link
-      to={`/movie/${movie.tmdbId}`}
-      className="group block w-[130px] shrink-0 transition duration-300 hover:-translate-y-0.5 sm:w-[140px] md:w-[150px] lg:w-[155px]"
-    >
-      <div className="relative aspect-[2/3] overflow-hidden rounded-[12px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
-        {movie.posterPath ? (
-          <img
-            src={`${TMDB_IMAGE_BASE_URL}${movie.posterPath}`}
-            alt=""
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <span className="text-[0.6rem] uppercase tracking-[0.22em] text-white/28">
-              MindCinema
-            </span>
-          </div>
-        )}
-      </div>
-
-      <div className="pt-2.5">
-        <h3 className="line-clamp-2 text-[0.8rem] font-semibold leading-[1.15] text-white/95 sm:text-[0.84rem]">
-          {movie.title}
-        </h3>
-      </div>
-    </Link>
-  );
-}
 
 function Hero({ onQuickStart, onExploreMoment }) {
   const [moviePostersById, setMoviePostersById] = useState({});
 
-  const movieCatalog = useMemo(
-    () =>
-      Array.from(
-        new Map(
-          Object.values(moviesByArea)
-            .flat()
-            .map((movie) => [movie.tmdbId, movie])
-        ).values()
-      ),
-    []
-  );
+  const movieCatalog = useMemo(() => getAreaMovieCatalog(), []);
 
   const featuredAreas = useMemo(
     () =>
       lifeAreas.map((area) => {
-        const primaryMovies = (moviesByArea[area.key] || []).slice(0, 3);
-        const primaryMovieIds = new Set(primaryMovies.map((movie) => movie.tmdbId));
-        const fillerMovies = movieCatalog
-          .filter((movie) => !primaryMovieIds.has(movie.tmdbId))
-          .slice(0, Math.max(rowMovieCount - primaryMovies.length, 0));
-        const rowMovies = [...primaryMovies, ...fillerMovies].slice(0, rowMovieCount);
+        const rowMovies = getHomeAreaMovies(area.key, {
+          limit: rowMovieCount,
+          catalog: movieCatalog,
+        });
 
         return {
           ...area,
-          displayTitle:
-            area.key === "personal" ? "Desarrollo personal" : area.title,
-          movies: rowMovies.map((movie) => ({
-            ...movie,
-            posterPath: moviePostersById[movie.tmdbId] || null,
-          })),
+          displayTitle: getAreaDisplayTitle(area),
+          movies: decorateAreaMoviesWithPosters(rowMovies, moviePostersById),
         };
       }),
     [movieCatalog, moviePostersById]
@@ -206,30 +163,15 @@ function Hero({ onQuickStart, onExploreMoment }) {
           <Container>
             <div className="space-y-10 sm:space-y-12">
               {featuredAreas.map((area) => (
-                <section key={area.key}>
-                  <div className="mb-5 flex items-center justify-between gap-4">
-                    <h3 className="text-[1.85rem] font-semibold tracking-tight text-white sm:text-[2.1rem] lg:text-[2.25rem]">
-                      {area.displayTitle}
-                    </h3>
-
-                    <button
-                      type="button"
-                      onClick={onExploreMoment}
-                      className="shrink-0 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/75 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
-                    >
-                      Ver todo
-                    </button>
-                  </div>
-
-                  <div className="flex gap-2 overflow-x-auto pb-3 no-scrollbar sm:gap-2.5">
-                    {area.movies.map((movie) => (
-                      <HomeMovieCard
-                        key={`${area.key}-${movie.tmdbId}`}
-                        movie={movie}
-                      />
-                    ))}
-                  </div>
-                </section>
+                <MovieGrid
+                  key={area.key}
+                  areaKey={area.key}
+                  areaTitle={area.displayTitle}
+                  movies={area.movies}
+                  ctaLabel="Ver área"
+                  ctaTo={getAreaPath(area.key)}
+                  layout="row"
+                />
               ))}
             </div>
           </Container>
