@@ -1,10 +1,121 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import lifeAreas from "../data/lifeAreas";
+import moviesByArea from "../data/deepRecommendations";
 import {
   fetchMovieDetailPage,
   TMDB_BACKDROP_BASE_URL,
   TMDB_IMAGE_BASE_URL,
 } from "../services/tmdb";
+
+function sortProvidersByPriority(providers = []) {
+  return [...providers].sort(
+    (left, right) => (left.display_priority || 999) - (right.display_priority || 999)
+  );
+}
+
+function ProviderGroup({ title, providers }) {
+  if (!providers.length) {
+    return null;
+  }
+
+  return (
+    <div>
+      <h3 className="text-sm font-medium tracking-[0.08em] text-white/88">
+        {title}
+      </h3>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {providers.map((provider) => (
+          <div
+            key={`${title}-${provider.provider_id}`}
+            className="rounded-[18px] border border-white/8 bg-white/[0.02] p-3"
+          >
+            <div className="flex items-center gap-3">
+              {provider.logo_path ? (
+                <img
+                  src={`${TMDB_IMAGE_BASE_URL}${provider.logo_path}`}
+                  alt={provider.provider_name}
+                  className="h-11 w-11 rounded-xl object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] text-[0.58rem] uppercase tracking-[0.18em] text-white/35">
+                  N/A
+                </div>
+              )}
+
+              <p className="text-sm leading-5 text-white/72">{provider.provider_name}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const areaLabelOverrides = {
+  personal: "Desarrollo personal",
+};
+
+const lifeAreaByKey = Object.fromEntries(lifeAreas.map((area) => [area.key, area]));
+const areaTitleToKey = Object.fromEntries(
+  lifeAreas.map((area) => [area.title.toLowerCase(), area.key])
+);
+const movieAreaIndex = Object.entries(moviesByArea).reduce((accumulator, [areaKey, movies]) => {
+  movies.forEach((movie) => {
+    if (!(movie.tmdbId in accumulator)) {
+      accumulator[movie.tmdbId] = [];
+    }
+
+    if (!accumulator[movie.tmdbId].includes(areaKey)) {
+      accumulator[movie.tmdbId].push(areaKey);
+    }
+  });
+
+  return accumulator;
+}, {});
+
+function formatLifeArea(areaKey) {
+  const area = lifeAreaByKey[areaKey];
+
+  if (!area) {
+    return null;
+  }
+
+  return {
+    key: area.key,
+    title: areaLabelOverrides[area.key] || area.title,
+  };
+}
+
+function resolveLifeAreas(tmdbId, fallbackState) {
+  const stateAreas = Array.isArray(fallbackState?.lifeArea)
+    ? fallbackState.lifeArea
+    : fallbackState?.lifeArea
+      ? [fallbackState.lifeArea]
+      : [];
+
+  const normalizedStateAreas = stateAreas
+    .map((areaValue) => {
+      if (lifeAreaByKey[areaValue]) {
+        return areaValue;
+      }
+
+      if (typeof areaValue === "string") {
+        return areaTitleToKey[areaValue.toLowerCase()] || null;
+      }
+
+      return null;
+    })
+    .filter(Boolean);
+
+  const resolvedAreaKeys = normalizedStateAreas.length
+    ? normalizedStateAreas
+    : movieAreaIndex[tmdbId] || [];
+
+  return resolvedAreaKeys.map(formatLifeArea).filter(Boolean);
+}
 
 function normalizeMovieDetail(data, fallbackState) {
   if (!data) {
@@ -19,14 +130,16 @@ function normalizeMovieDetail(data, fallbackState) {
   const selectedRegion =
     providersByRegion.ES ? "ES" : providersByRegion.US ? "US" : null;
   const regionProviders = selectedRegion ? providersByRegion[selectedRegion] : null;
-  const watchProviders = [
-    ...(regionProviders?.flatrate || []),
-    ...(regionProviders?.rent || []),
-    ...(regionProviders?.buy || []),
-  ].filter(
-    (provider, index, providers) =>
-      providers.findIndex((item) => item.provider_id === provider.provider_id) === index
-  );
+  const watchProviders = {
+    flatrate: sortProvidersByPriority(regionProviders?.flatrate || []),
+    rent: sortProvidersByPriority(regionProviders?.rent || []),
+    buy: sortProvidersByPriority(regionProviders?.buy || []),
+  };
+  const hasWatchProviders =
+    watchProviders.flatrate.length > 0 ||
+    watchProviders.rent.length > 0 ||
+    watchProviders.buy.length > 0;
+  const lifeAreas = resolveLifeAreas(data.id, fallbackState);
 
   return {
     id: data.id,
@@ -53,9 +166,11 @@ function normalizeMovieDetail(data, fallbackState) {
         : null,
     })),
     watchProviders,
+    hasWatchProviders,
     watchRegion: selectedRegion,
     watchLink: regionProviders?.link || null,
     trailerKey: trailer?.key || null,
+    lifeAreas,
     imdbUrl: data.external_ids?.imdb_id
       ? `https://www.imdb.com/title/${data.external_ids.imdb_id}/`
       : null,
@@ -109,6 +224,10 @@ function MovieDetail() {
     return `${movieDetail.overview.slice(0, 220).trim()}…`;
   }, [movieDetail]);
   const isOverviewExpanded = expandedOverviewFor === id;
+  const scrollToProviders = () =>
+    document
+      .getElementById("watch-providers")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
@@ -218,20 +337,36 @@ function MovieDetail() {
 
                       <button
                         type="button"
-                        onClick={() =>
-                          document
-                            .getElementById("watch-providers")
-                            ?.scrollIntoView({ behavior: "smooth", block: "start" })
-                        }
+                        onClick={scrollToProviders}
                         className="mt-8 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
                       >
-                        Elegir plataforma
+                        Ver plataformas disponibles
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             </section>
+
+            {movieDetail.lifeAreas.length ? (
+              <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                  ÁREA DE VIDA
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-3">
+                  {movieDetail.lifeAreas.map((area) => (
+                    <Link
+                      key={area.key}
+                      to={`/areas/${area.key}`}
+                      className="inline-flex rounded-full border border-[#d8c39b]/16 bg-[#d8c39b]/7 px-4 py-2 text-[0.76rem] font-medium uppercase tracking-[0.18em] text-[#dcc79f] transition hover:border-[#d8c39b]/34 hover:bg-[#d8c39b]/12 hover:text-[#ead9b8]"
+                    >
+                      {area.title}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
               <div className="max-w-4xl">
@@ -303,39 +438,24 @@ function MovieDetail() {
               className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8"
             >
               <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                DÓNDE VERLA
+                PLATAFORMAS DISPONIBLES
               </p>
 
-              {movieDetail.watchProviders.length ? (
+              {movieDetail.hasWatchProviders ? (
                 <>
-                  <p className="mt-5 max-w-2xl text-sm leading-6 text-white/62">
-                    Plataformas disponibles{movieDetail.watchRegion
-                      ? ` en ${movieDetail.watchRegion}`
-                      : ""}. Revisa las opciones y usa el botón para elegir dónde verla.
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-4">
-                    {movieDetail.watchProviders.map((provider) => (
-                      <div
-                        key={provider.provider_id}
-                        className="rounded-2xl border border-white/10 bg-[#0f131a] px-4 py-4"
-                      >
-                        {provider.logo_path ? (
-                          <img
-                            src={`${TMDB_IMAGE_BASE_URL}${provider.logo_path}`}
-                            alt={provider.provider_name}
-                            className="h-12 w-12 rounded-xl object-cover"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-[0.6rem] uppercase tracking-[0.18em] text-white/35">
-                            N/A
-                          </div>
-                        )}
-                        <p className="mt-3 max-w-[84px] text-xs leading-5 text-white/72">
-                          {provider.provider_name}
-                        </p>
-                      </div>
-                    ))}
+                  <div className="mt-5 space-y-7">
+                    <ProviderGroup
+                      title="Suscripción"
+                      providers={movieDetail.watchProviders.flatrate}
+                    />
+                    <ProviderGroup
+                      title="Alquiler"
+                      providers={movieDetail.watchProviders.rent}
+                    />
+                    <ProviderGroup
+                      title="Compra"
+                      providers={movieDetail.watchProviders.buy}
+                    />
                   </div>
 
                   {movieDetail.watchLink ? (
@@ -345,7 +465,7 @@ function MovieDetail() {
                       rel="noreferrer"
                       className="mt-6 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
                     >
-                      Elegir plataforma
+                      Elegir plataforma para verla
                     </a>
                   ) : null}
                 </>
@@ -357,22 +477,35 @@ function MovieDetail() {
             </section>
 
             {movieDetail.trailerKey ? (
-              <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                  TRÁILER
-                </p>
-                <div className="mt-5 overflow-hidden rounded-[24px] border border-white/10">
-                  <div className="aspect-video">
-                    <iframe
-                      title={`Trailer de ${movieDetail.title}`}
-                      src={`https://www.youtube.com/embed/${movieDetail.trailerKey}`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="h-full w-full"
-                    />
+              <div className="space-y-6">
+                <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+                  <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                    TRÁILER
+                  </p>
+                  <div className="mt-5 overflow-hidden rounded-[24px] border border-white/10">
+                    <div className="aspect-video">
+                      <iframe
+                        title={`Trailer de ${movieDetail.title}`}
+                        src={`https://www.youtube.com/embed/${movieDetail.trailerKey}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="h-full w-full"
+                      />
+                    </div>
                   </div>
+                </section>
+
+                <div className="flex justify-center">
+                  <a
+                    href={movieDetail.watchLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+                  >
+                    Elegir plataforma para verla
+                  </a>
                 </div>
-              </section>
+              </div>
             ) : null}
           </div>
         ) : null}

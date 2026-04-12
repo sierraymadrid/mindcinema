@@ -1,5 +1,6 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import About from "./components/About";
+import AreaDetail from "./components/AreaDetail";
 import Hero from "./components/Hero";
 import MovieDetail from "./components/MovieDetail";
 import QuickResultScreen from "./components/QuickResultScreen";
@@ -29,6 +30,7 @@ function App() {
         <Route path="/test" element={<Test />} />
         <Route path="/test/result" element={<TestResultScreen />} />
         <Route path="/movie/:id" element={<MovieDetail />} />
+        <Route path="/areas/:key" element={<AreaDetail />} />
         <Route path="/about" element={<About />} />
       </Route>
     </Routes>
