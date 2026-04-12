@@ -10,10 +10,10 @@ function Footer() {
 
           <div className="flex items-center gap-4">
             <NavLink to="/" className="transition hover:text-white">
-              Home
+              Inicio
             </NavLink>
             <NavLink to="/about" className="transition hover:text-white">
-              About
+              Sobre MindCinema
             </NavLink>
           </div>
         </div>

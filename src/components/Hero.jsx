@@ -195,7 +195,7 @@ function Hero({ onQuickStart, onExploreMoment }) {
                   onClick={onExploreMoment}
                   className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-7 py-3.5 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                 >
-                  Test de áreas de vida
+                  Explorar tu momento
                 </button>
               </div>
             </div>
@@ -237,30 +237,10 @@ function Hero({ onQuickStart, onExploreMoment }) {
 
         <section className="py-8 sm:py-10">
           <Container>
-            <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-              <div className="mx-auto max-w-2xl text-center">
-                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                  MISIÓN
-                </p>
-                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
-                  Elegir qué ver con sentido
-                </h2>
-                <p className="mt-4 text-base leading-7 text-white/62 sm:text-lg">
-                  MindCinema es una app de recomendación de películas orientada al
-                  momento vital y emocional del usuario: películas para acompañar tu
-                  momento, no para perderte en un catálogo.
-                </p>
-              </div>
-            </div>
-          </Container>
-        </section>
-
-        <section className="py-8 sm:py-10">
-          <Container>
             <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 text-center shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
               <p className="mx-auto max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
-                Elige una recomendación rápida si quieres resolverlo ya, o entra en el
-                test si prefieres una lectura más completa.
+                Elige una recomendación rápida si quieres resolverlo ya, o entra en la
+                exploración de tu momento si prefieres una lectura más completa.
               </p>
 
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -269,7 +249,7 @@ function Hero({ onQuickStart, onExploreMoment }) {
                   onClick={onQuickStart}
                   className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-7 py-3.5 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
                 >
-                  Probar recomendación rápida
+                  Recomendación rápida
                 </button>
 
                 <button
@@ -277,7 +257,7 @@ function Hero({ onQuickStart, onExploreMoment }) {
                   onClick={onExploreMoment}
                   className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-7 py-3.5 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
                 >
-                  Hacer el test
+                  Explorar tu momento
                 </button>
               </div>
             </div>

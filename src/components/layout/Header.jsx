@@ -2,10 +2,10 @@ import { NavLink } from "react-router-dom";
 import Container from "./Container";
 
 const navItems = [
-  { to: "/", label: "Home" },
-  { to: "/quick", label: "Quick" },
-  { to: "/test", label: "Test" },
-  { to: "/about", label: "About" },
+  { to: "/", label: "Inicio" },
+  { to: "/quick", label: "Recomendación rápida" },
+  { to: "/test", label: "Explorar tu momento" },
+  { to: "/about", label: "Sobre MindCinema" },
 ];
 
 function Header() {
