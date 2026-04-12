@@ -238,7 +238,7 @@ function Hero({ onQuickStart, onExploreMoment }) {
         <section className="py-8 sm:py-10">
           <Container>
             <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-              <div className="max-w-2xl">
+              <div className="mx-auto max-w-2xl text-center">
                 <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
                   MISIÓN
                 </p>

@@ -225,7 +225,7 @@ function MovieDetail() {
                         }
                         className="mt-8 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
                       >
-                        Ver dónde está disponible
+                        Elegir plataforma
                       </button>
                     </div>
                   </div>
@@ -308,6 +308,11 @@ function MovieDetail() {
 
               {movieDetail.watchProviders.length ? (
                 <>
+                  <p className="mt-5 max-w-2xl text-sm leading-6 text-white/62">
+                    Plataformas disponibles{movieDetail.watchRegion
+                      ? ` en ${movieDetail.watchRegion}`
+                      : ""}. Revisa las opciones y usa el botón para elegir dónde verla.
+                  </p>
                   <div className="mt-5 flex flex-wrap gap-4">
                     {movieDetail.watchProviders.map((provider) => (
                       <div
@@ -340,7 +345,7 @@ function MovieDetail() {
                       rel="noreferrer"
                       className="mt-6 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
                     >
-                      Ver opciones para verla
+                      Elegir plataforma
                     </a>
                   ) : null}
                 </>
@@ -369,16 +374,6 @@ function MovieDetail() {
                 </div>
               </section>
             ) : null}
-
-            <section className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="inline-flex rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
-              >
-                Volver
-              </button>
-            </section>
           </div>
         ) : null}
       </section>
