@@ -6,6 +6,7 @@ function Test() {
 
   return (
     <TestAreaScreen
+      onBack={() => navigate("/")}
       onComplete={(answersByArea) =>
         navigate("/test/result", { state: { answersByArea } })
       }

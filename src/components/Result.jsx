@@ -6,17 +6,79 @@ import {
   TMDB_IMAGE_BASE_URL,
 } from "../services/tmdb";
 
-function Result({ mood, onBack }) {
+function ResultMovieCard({ movie }) {
   const navigate = useNavigate();
+  const [imageFailed, setImageFailed] = useState(!movie.image);
+
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        movie.tmdbId &&
+        navigate(`/movie/${movie.tmdbId}`, {
+          state: {
+            from: "/quick/result",
+          },
+        })
+      }
+      className="text-left rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b] sm:p-3.5"
+    >
+      <div className="relative flex aspect-[2/3] items-end overflow-hidden rounded-[20px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-4">
+        {!imageFailed ? (
+          <>
+            <img
+              src={movie.image}
+              alt={`Poster de ${movie.title}`}
+              className="absolute inset-0 z-0 h-full w-full object-cover brightness-110"
+              loading="lazy"
+              onError={() => setImageFailed(true)}
+            />
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#05070b]/60 via-[#05070b]/24 to-transparent" />
+          </>
+        ) : null}
+
+        {imageFailed ? (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13]">
+            <div className="rounded-[18px] border border-dashed border-white/10 bg-white/[0.03] px-4 py-3 text-center">
+              <span className="text-[0.68rem] uppercase tracking-[0.22em] text-white/35">
+                MindCinema
+              </span>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="relative z-20 w-full">
+          <div className="inline-flex rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-[#d7c29d]">
+            {movie.type}
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-4">
+        <h2 className="text-[1.35rem] font-semibold leading-tight text-white">
+          {movie.title}
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-white/68">
+          {movie.reason}
+        </p>
+      </div>
+    </button>
+  );
+}
+
+function Result({ mood, onBack }) {
   const recommendation = recommendationsByMood[mood];
   const movies = recommendation?.movies || [];
   const [displayMovies, setDisplayMovies] = useState(movies);
   const [isLoadingMovies, setIsLoadingMovies] = useState(false);
+  const [hasMovieUpdateError, setHasMovieUpdateError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     let isCancelled = false;
 
     setDisplayMovies(movies);
+    setHasMovieUpdateError(false);
 
     async function enrichMovies() {
       if (!movies.length || !import.meta.env.VITE_TMDB_API_KEY) {
@@ -24,6 +86,7 @@ function Result({ mood, onBack }) {
       }
 
       setIsLoadingMovies(true);
+      let hasFailedRequest = false;
 
       try {
         const nextMovies = await Promise.all(
@@ -43,6 +106,7 @@ function Result({ mood, onBack }) {
                 overview: details.overview?.trim() || movie.overview,
               };
             } catch {
+              hasFailedRequest = true;
               return movie;
             }
           })
@@ -50,6 +114,7 @@ function Result({ mood, onBack }) {
 
         if (!isCancelled) {
           setDisplayMovies(nextMovies);
+          setHasMovieUpdateError(hasFailedRequest);
         }
       } finally {
         if (!isCancelled) {
@@ -63,7 +128,7 @@ function Result({ mood, onBack }) {
     return () => {
       isCancelled = true;
     };
-  }, [movies]);
+  }, [movies, retryKey]);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
@@ -107,47 +172,50 @@ function Result({ mood, onBack }) {
                   Actualizando fichas
                 </p>
               ) : null}
+
+              {!isLoadingMovies && hasMovieUpdateError ? (
+                <>
+                  <p className="mr-auto text-sm text-white/46">
+                    Algunas fichas no se pudieron actualizar.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setRetryKey((currentKey) => currentKey + 1)}
+                    className="text-sm text-white/70 transition hover:text-white"
+                  >
+                    Reintentar
+                  </button>
+                </>
+              ) : null}
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
-              {displayMovies.slice(0, 4).map((movie) => (
+            {displayMovies.length ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
+                {displayMovies.slice(0, 4).map((movie) => (
+                  <ResultMovieCard
+                    key={movie.id}
+                    movie={movie}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-8 text-center shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur">
+                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                  SIN RECOMENDACIONES
+                </p>
+                <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
+                  No encontramos películas para este estado ahora mismo. Puedes volver a
+                  elegir otro mood y seguir explorando.
+                </p>
                 <button
-                  key={movie.id}
                   type="button"
-                  onClick={() => movie.tmdbId && navigate(`/movie/${movie.tmdbId}`)}
-                  className="text-left rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b] sm:p-3.5"
+                  onClick={onBack}
+                  className="mt-8 inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
                 >
-                  <div className="relative flex aspect-[2/3] items-end overflow-hidden rounded-[20px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-4">
-                    {movie.image ? (
-                      <>
-                        <img
-                          src={movie.image}
-                          alt={`Poster de ${movie.title}`}
-                          className="absolute inset-0 z-0 h-full w-full object-cover brightness-110"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#05070b]/60 via-[#05070b]/24 to-transparent" />
-                      </>
-                    ) : null}
-
-                    <div className="relative z-20 w-full">
-                      <div className="inline-flex rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-[#d7c29d]">
-                        {movie.type}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4">
-                    <h2 className="text-[1.35rem] font-semibold leading-tight text-white">
-                      {movie.title}
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-white/68">
-                      {movie.reason}
-                    </p>
-                  </div>
+                  Volver a elegir
                 </button>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

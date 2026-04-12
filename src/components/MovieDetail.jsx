@@ -184,6 +184,14 @@ function MovieDetail() {
   const [status, setStatus] = useState("loading");
   const [movieDetail, setMovieDetail] = useState(null);
   const [expandedOverviewFor, setExpandedOverviewFor] = useState(null);
+  const [retryKey, setRetryKey] = useState(0);
+
+  function handleBack() {
+    const fallbackRoute =
+      typeof location.state?.from === "string" ? location.state.from : "/";
+
+    navigate(fallbackRoute);
+  }
 
   useEffect(() => {
     let isCancelled = false;
@@ -210,7 +218,7 @@ function MovieDetail() {
     return () => {
       isCancelled = true;
     };
-  }, [id, location.state]);
+  }, [id, location.state, retryKey]);
 
   const shortOverview = useMemo(() => {
     if (!movieDetail?.overview) {
@@ -242,7 +250,7 @@ function MovieDetail() {
       <section className="relative z-10 mx-auto w-full max-w-6xl px-6 py-14 sm:px-10 sm:py-16">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
           className="mb-8 text-sm text-white/60 transition hover:text-white"
         >
           ← Volver
@@ -268,8 +276,25 @@ function MovieDetail() {
               No pudimos cargar esta película
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
-              Inténtalo de nuevo más tarde o vuelve al resultado para seguir explorando.
+              Inténtalo de nuevo o vuelve al inicio para seguir explorando.
             </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => setRetryKey((currentKey) => currentKey + 1)}
+                className="inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+              >
+                Reintentar
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                className="inline-flex rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
+              >
+                Volver al inicio
+              </button>
+            </div>
           </div>
         ) : null}
 
@@ -348,12 +373,12 @@ function MovieDetail() {
               </div>
             </section>
 
-            {movieDetail.lifeAreas.length ? (
-              <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                  ÁREA DE VIDA
-                </p>
+            <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+              <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                ÁREA DE VIDA
+              </p>
 
+              {movieDetail.lifeAreas.length ? (
                 <div className="mt-5 flex flex-wrap gap-3">
                   {movieDetail.lifeAreas.map((area) => (
                     <Link
@@ -365,8 +390,12 @@ function MovieDetail() {
                     </Link>
                   ))}
                 </div>
-              </section>
-            ) : null}
+              ) : (
+                <p className="mt-4 text-sm leading-6 text-white/56">
+                  Todavía no hemos asociado esta película a un área de vida concreta.
+                </p>
+              )}
+            </section>
 
             <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
               <div className="max-w-4xl">
@@ -476,12 +505,13 @@ function MovieDetail() {
               )}
             </section>
 
-            {movieDetail.trailerKey ? (
-              <div className="space-y-6">
-                <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
-                  <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
-                    TRÁILER
-                  </p>
+            <div className="space-y-6">
+              <section className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
+                <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                  TRÁILER
+                </p>
+
+                {movieDetail.trailerKey ? (
                   <div className="mt-5 overflow-hidden rounded-[24px] border border-white/10">
                     <div className="aspect-video">
                       <iframe
@@ -493,8 +523,14 @@ function MovieDetail() {
                       />
                     </div>
                   </div>
-                </section>
+                ) : (
+                  <p className="mt-4 text-sm leading-6 text-white/56">
+                    No tenemos un tráiler disponible para esta película por ahora.
+                  </p>
+                )}
+              </section>
 
+              {movieDetail.watchLink ? (
                 <div className="flex justify-center">
                   <a
                     href={movieDetail.watchLink}
@@ -505,8 +541,8 @@ function MovieDetail() {
                     Elegir plataforma para verla
                   </a>
                 </div>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         ) : null}
       </section>

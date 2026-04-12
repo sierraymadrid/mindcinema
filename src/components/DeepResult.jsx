@@ -97,7 +97,14 @@ function RecommendationCard({ movie, lifeArea }) {
   return (
     <button
       type="button"
-      onClick={() => navigate(`/movie/${movie.tmdbId}`, { state: { lifeArea } })}
+      onClick={() =>
+        navigate(`/movie/${movie.tmdbId}`, {
+          state: {
+            from: "/test/result",
+            lifeArea,
+          },
+        })
+      }
       className="text-left rounded-[24px] border border-white/10 bg-white/[0.03] p-3 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8c39b]"
     >
       <div className="relative flex aspect-[2/3] items-end overflow-hidden rounded-[20px] border border-white/8 bg-gradient-to-b from-[#1a2029] via-[#10151d] to-[#0a0d13] p-4">
@@ -136,6 +143,10 @@ function RecommendationCard({ movie, lifeArea }) {
 
 function DeepResult({ answersByArea }) {
   const [moviePostersById, setMoviePostersById] = useState({});
+  const navigate = useNavigate();
+  const [isLoadingPosters, setIsLoadingPosters] = useState(false);
+  const [hasPosterUpdateError, setHasPosterUpdateError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
   const scoredAreas = lifeAreas.map((area) => {
     const areaAnswers = answersByArea[area.key] || [];
@@ -192,9 +203,11 @@ function DeepResult({ answersByArea }) {
       .filter(Boolean)
   );
   const recommendedTmdbIdsKey = recommendedTmdbIds.join(",");
+  const hasRecommendations = recommendedMoviesByArea.some((area) => area.movies.length);
 
   useEffect(() => {
     let isCancelled = false;
+    setHasPosterUpdateError(false);
 
     async function enrichPosters() {
       const missingIds = recommendedTmdbIds.filter(
@@ -205,12 +218,16 @@ function DeepResult({ answersByArea }) {
         return;
       }
 
+      setIsLoadingPosters(true);
+      let hasFailedRequest = false;
+
       const posterEntries = await Promise.all(
         missingIds.map(async (tmdbId) => {
           try {
             const details = await fetchMovieDetails(tmdbId);
             return [tmdbId, details?.posterPath || null];
           } catch {
+            hasFailedRequest = true;
             return [tmdbId, null];
           }
         })
@@ -221,6 +238,8 @@ function DeepResult({ answersByArea }) {
           ...currentPosters,
           ...Object.fromEntries(posterEntries),
         }));
+        setHasPosterUpdateError(hasFailedRequest);
+        setIsLoadingPosters(false);
       }
     }
 
@@ -229,13 +248,21 @@ function DeepResult({ answersByArea }) {
     return () => {
       isCancelled = true;
     };
-  }, [moviePostersById, recommendedTmdbIds, recommendedTmdbIdsKey]);
+  }, [moviePostersById, recommendedTmdbIds, recommendedTmdbIdsKey, retryKey]);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
       <CinematicBackground />
 
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-14 pt-20 sm:px-10 sm:pb-16 sm:pt-24">
+        <button
+          type="button"
+          onClick={() => navigate("/test")}
+          className="mb-8 text-sm text-white/60 transition hover:text-white"
+        >
+          ← Volver al test
+        </button>
+
         <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
           <div className="sticky top-4 z-20 -mx-2 rounded-[24px] bg-[linear-gradient(180deg,rgba(5,7,11,0.96),rgba(5,7,11,0.82),rgba(5,7,11,0))] px-2 pb-8 pt-1 sm:-mx-3 sm:px-3">
             <div className="mx-auto max-w-3xl text-center">
@@ -383,30 +410,102 @@ function DeepResult({ answersByArea }) {
           <section className="pt-16 sm:pt-20">
             <ResultIntro />
 
-            <div className="mt-10 space-y-14">
-              {recommendedMoviesByArea.map((area) => (
-                <section
-                  key={area.key}
-                  id={`area-${area.key}`}
-                  className="scroll-mt-24"
-                >
-                  <h3 className="text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl">
-                    {area.title}
-                  </h3>
+            <div className="mt-10">
+              <div className="mb-5 flex items-center justify-end gap-2">
+                {isLoadingPosters ? (
+                  <p className="mr-auto text-[0.68rem] uppercase tracking-[0.2em] text-white/34">
+                    Actualizando fichas
+                  </p>
+                ) : null}
 
-                  <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-5">
-                    {area.movies.map((movie) => (
-                      <RecommendationCard
-                        key={`${area.key}-${movie.title}-${movie.posterPath || "no-poster"}`}
-                        movie={movie}
-                        lifeArea={area.title}
-                      />
-                    ))}
+                {!isLoadingPosters && hasPosterUpdateError ? (
+                  <>
+                    <p className="mr-auto text-sm text-white/46">
+                      Algunas fichas no se pudieron actualizar.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setRetryKey((currentKey) => currentKey + 1)}
+                      className="text-sm text-white/70 transition hover:text-white"
+                    >
+                      Reintentar
+                    </button>
+                  </>
+                ) : null}
+              </div>
+
+              {hasRecommendations ? (
+                <div className="space-y-14">
+                  {recommendedMoviesByArea.map((area) => (
+                    <section
+                      key={area.key}
+                      id={`area-${area.key}`}
+                      className="scroll-mt-24"
+                    >
+                      <h3 className="text-3xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl">
+                        {area.title}
+                      </h3>
+
+                      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-5">
+                        {area.movies.map((movie) => (
+                          <RecommendationCard
+                            key={`${area.key}-${movie.title}-${movie.posterPath || "no-poster"}`}
+                            movie={movie}
+                            lifeArea={area.title}
+                          />
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-8 text-center shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur">
+                  <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-[#d2b98b]">
+                    SIN RECOMENDACIONES
+                  </p>
+                  <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
+                    No pudimos generar recomendaciones claras con este resultado. Puedes
+                    repetir el test o volver al inicio.
+                  </p>
+                  <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => navigate("/test")}
+                      className="inline-flex rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+                    >
+                      Repetir test
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate("/")}
+                      className="inline-flex rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
+                    >
+                      Volver al inicio
+                    </button>
                   </div>
-                </section>
-              ))}
+                </div>
+              )}
             </div>
           </section>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => navigate("/test")}
+            className="inline-flex rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
+          >
+            Repetir test
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="inline-flex rounded-full border border-white/10 bg-transparent px-6 py-3 text-sm font-medium text-white/70 transition duration-300 hover:text-white"
+          >
+            Volver al inicio
+          </button>
         </div>
       </section>
     </main>

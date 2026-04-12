@@ -3,6 +3,7 @@ import About from "./components/About";
 import AreaDetail from "./components/AreaDetail";
 import Hero from "./components/Hero";
 import MovieDetail from "./components/MovieDetail";
+import NotFound from "./components/NotFound";
 import QuickResultScreen from "./components/QuickResultScreen";
 import QuickScreen from "./components/QuickScreen";
 import Test from "./components/Test";
@@ -32,6 +33,7 @@ function App() {
         <Route path="/movie/:id" element={<MovieDetail />} />
         <Route path="/areas/:key" element={<AreaDetail />} />
         <Route path="/about" element={<About />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

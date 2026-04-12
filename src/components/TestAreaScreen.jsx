@@ -15,7 +15,7 @@ function CinematicBackground() {
   );
 }
 
-function TestAreaScreen({ onComplete }) {
+function TestAreaScreen({ onBack, onComplete }) {
   const [state, setState] = useState({
     currentAreaIndex: 0,
     answersByArea: {},
@@ -69,12 +69,34 @@ function TestAreaScreen({ onComplete }) {
     }));
   }
 
+  function handlePrevious() {
+    if (state.currentAreaIndex === 0) {
+      if (onBack) {
+        onBack();
+      }
+      return;
+    }
+
+    setState((currentState) => ({
+      ...currentState,
+      currentAreaIndex: currentState.currentAreaIndex - 1,
+    }));
+  }
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
       <CinematicBackground />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-xl items-center px-6 py-14 sm:px-8 sm:py-16">
         <div className="w-full rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-7">
+          <button
+            type="button"
+            onClick={handlePrevious}
+            className="mb-6 text-sm text-white/60 transition hover:text-white"
+          >
+            ← {state.currentAreaIndex === 0 ? "Volver" : "Área anterior"}
+          </button>
+
           <p className="text-[0.72rem] font-medium uppercase tracking-[0.32em] text-white/50">
             Área {state.currentAreaIndex + 1} de {lifeAreas.length}
           </p>
@@ -121,18 +143,28 @@ function TestAreaScreen({ onComplete }) {
             ))}
           </div>
 
-          <button
-            type="button"
-            disabled={!isCurrentAreaComplete}
-            onClick={handleContinue}
-            className={`mt-8 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-medium transition duration-300 ${
-              isCurrentAreaComplete
-                ? "border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
-                : "cursor-not-allowed border border-white/8 bg-white/[0.03] text-white/35"
-            }`}
-          >
-            Continuar
-          </button>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={handlePrevious}
+              className="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+            >
+              {state.currentAreaIndex === 0 ? "Salir del test" : "Volver a la anterior"}
+            </button>
+
+            <button
+              type="button"
+              disabled={!isCurrentAreaComplete}
+              onClick={handleContinue}
+              className={`inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-medium transition duration-300 ${
+                isCurrentAreaComplete
+                  ? "border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+                  : "cursor-not-allowed border border-white/8 bg-white/[0.03] text-white/35"
+              }`}
+            >
+              {state.currentAreaIndex === lifeAreas.length - 1 ? "Ver resultado" : "Continuar"}
+            </button>
+          </div>
         </div>
       </section>
     </main>
