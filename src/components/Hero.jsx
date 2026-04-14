@@ -5,7 +5,6 @@ import MovieGrid from "./MovieGrid";
 import Container from "./layout/Container";
 import {
   decorateAreaMoviesWithPosters,
-  getAreaMovieCatalog,
   getHomeAreaMovies,
 } from "../recommendations/areaRecommendations";
 import { getAreaDisplayTitle, getAreaPath } from "../utils/lifeAreas";
@@ -15,15 +14,10 @@ const rowMovieCount = 9;
 function Hero({ onQuickStart, onExploreMoment }) {
   const [moviePostersById, setMoviePostersById] = useState({});
 
-  const movieCatalog = useMemo(() => getAreaMovieCatalog(), []);
-
   const featuredAreas = useMemo(
     () =>
       lifeAreas.map((area) => {
-        const rowMovies = getHomeAreaMovies(area.key, {
-          limit: rowMovieCount,
-          catalog: movieCatalog,
-        });
+        const rowMovies = getHomeAreaMovies(area.key, { limit: rowMovieCount });
 
         return {
           ...area,
@@ -31,15 +25,16 @@ function Hero({ onQuickStart, onExploreMoment }) {
           movies: decorateAreaMoviesWithPosters(rowMovies, moviePostersById),
         };
       }),
-    [movieCatalog, moviePostersById]
+    [moviePostersById]
   );
 
   const featuredTmdbIds = useMemo(
     () =>
-      movieCatalog
+      featuredAreas
+        .flatMap((area) => area.movies)
         .map((movie) => movie.tmdbId)
         .filter(Boolean),
-    [movieCatalog]
+    [featuredAreas]
   );
   const featuredTmdbIdsKey = featuredTmdbIds.join(",");
   const heroBackdropMovies = featuredAreas[0]?.movies.slice(0, 3) || [];

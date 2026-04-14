@@ -26,15 +26,6 @@ function getAreaMovies(areaKey) {
   return normalizeAreaEntry(moviesByArea[areaKey]);
 }
 
-function fillWithCatalog(primaryMovies, catalog, limit) {
-  const primaryMovieIds = new Set(primaryMovies.map((movie) => movie.tmdbId));
-  const fillerMovies = catalog
-    .filter((movie) => !primaryMovieIds.has(movie.tmdbId))
-    .slice(0, Math.max(limit - primaryMovies.length, 0));
-
-  return [...primaryMovies, ...fillerMovies].slice(0, limit);
-}
-
 export function getAreaMovieArchiveMap() {
   return moviesByArea;
 }
@@ -50,10 +41,9 @@ export function getAreaMovieCatalog() {
 }
 
 export function getHomeAreaMovies(areaKey, options = {}) {
-  const { limit = 9, catalog = [] } = options;
-  const primaryMovies = getAreaMovieArchive(areaKey).slice(0, 3);
+  const { limit = 9 } = options;
 
-  return fillWithCatalog(primaryMovies, catalog, limit);
+  return getAreaMovieArchive(areaKey).slice(0, limit);
 }
 
 export function getDeepAreaMovies(areaKey, options = {}) {
