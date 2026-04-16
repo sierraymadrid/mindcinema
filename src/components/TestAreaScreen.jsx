@@ -146,14 +146,6 @@ function TestAreaScreen({ onBack, onComplete }) {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
-              onClick={handlePrevious}
-              className="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-            >
-              {state.currentAreaIndex === 0 ? "Salir del test" : "Volver a la anterior"}
-            </button>
-
-            <button
-              type="button"
               disabled={!isCurrentAreaComplete}
               onClick={handleContinue}
               className={`inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-medium transition duration-300 ${
@@ -163,6 +155,14 @@ function TestAreaScreen({ onBack, onComplete }) {
               }`}
             >
               {state.currentAreaIndex === lifeAreas.length - 1 ? "Ver resultado" : "Continuar"}
+            </button>
+
+            <button
+              type="button"
+              onClick={handlePrevious}
+              className="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+            >
+              {state.currentAreaIndex === 0 ? "Salir del test" : "Volver a la anterior"}
             </button>
           </div>
         </div>
