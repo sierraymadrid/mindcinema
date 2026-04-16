@@ -7,11 +7,7 @@ function Footer() {
       <Container>
         <div className="flex flex-col gap-4 py-6 text-sm text-white/48 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-2xl leading-6">
-            Hecho con{" "}
-            <span className="inline-block align-[-0.08em] text-[#d2b98b]" aria-hidden="true">
-              ♡
-            </span>{" "}
-            por{" "}
+            MVP creado por{" "}
             <a
               href="https://gemmasierra.com"
               target="_blank"
@@ -20,7 +16,8 @@ function Footer() {
             >
               Gemma Sierra
             </a>
-            . MVP construido con la API de TMDB.
+            <br />
+            con la API de TMDB
           </p>
 
           <div className="flex items-center gap-4">
