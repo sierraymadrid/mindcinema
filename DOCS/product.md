@@ -1,259 +1,521 @@
-# Product - MindCinema
+# MindCinema – Product Direction
 
-## 1. Vision
+## 1. Qué es MindCinema
 
-MindCinema es una aplicacion web que ayuda a descubrir peliculas con sentido segun el momento vital o emocional de cada persona.
+MindCinema es una app de recomendación de películas orientada al momento vital y emocional del usuario.
 
-El producto se apoya en dos entradas principales:
+No es un catálogo.
+No es una base de datos.
+No es “otra Netflix”.
 
-- una ruta rapida para cuando el usuario quiere una recomendacion inmediata
-- una ruta profunda para cuando el usuario quiere explorar como esta en distintas areas de su vida
-
-El objetivo del producto no es solo recomendar peliculas, sino convertir el cine en una herramienta de reflexion, acompañamiento y crecimiento.
-
----
-
-## 2. Product Principles
-
-- Simplicidad: pocas decisiones, flujos claros y sin ruido innecesario
-- Claridad: cada pantalla debe decir rapidamente que esta pasando y que hacer despues
-- Sentido: cada recomendacion debe sentirse conectada con un area o estado real
-- Coherencia: mantener una misma logica visual y de navegacion en todo el producto
-- Ligereza tecnica: frontend-only, sin backend propio por ahora
+Es una herramienta para elegir qué ver con sentido.
 
 ---
 
-## 3. Main User Flows
+## 2. Propuesta de valor
 
-### Ruta rapida
+MindCinema te recomienda qué ver según cómo te sientes o según lo que necesitas atender en este momento de tu vida.
 
-Pensada para quien quiere una pelicula ahora mismo.
-
-Flujo:
-
-1. entra en la home
-2. elige ruta rapida
-3. selecciona un mood o intencion
-4. llega a una pantalla de resultado
-5. explora peliculas recomendadas
-6. entra en detalle de pelicula
-
-### Ruta profunda
-
-Pensada para quien quiere explorar su momento actual con mas contexto.
-
-Flujo:
-
-1. entra en la home
-2. elige explorar su momento
-3. completa el test de areas de vida
-4. llega a una pantalla de resultado con rueda de vida y areas prioritarias
-5. explora peliculas asociadas a esas areas
-6. entra en detalle de pelicula
+Alternativas:
+- Películas para acompañar tu momento
+- Qué ver según cómo estás, no según el género
 
 ---
 
-## 4. Routing Strategy
+## 3. Intención del usuario
 
-La estructura de rutas debe ser simple, limpia y bien organizada. La idea es evitar rutas improvisadas y dejar una base clara para crecer.
+El usuario no quiere explorar películas.
 
-### Estado actual implementado
+Quiere resolver una de estas situaciones:
 
-- `/`
-- `/test`
-- `/movie/:id`
-
-Notas:
-
-- el flujo rapido actualmente vive dentro de `/` con estado local
-- el detalle de pelicula ya es una pagina real, no un modal
-
-### Decision de producto proxima
-
-La estructura objetivo inmediata de rutas es:
-
-- `/`
-- `/quick`
-- `/quick/result`
-- `/test`
-- `/test/result`
-- `/movie/:id`
-- `/about`
-- `/areas/:slug`
-
-### Criterio para los resultados
-
-Las pantallas de resultado deben tener ruta propia aunque no sean paginas publicas de acceso libre.
-
-Esto permite:
-
-- mejor estructura de navegacion
-- comportamiento correcto del boton atras
-- mejor legibilidad de arquitectura
-- separacion mas clara entre pasos del flujo
-
-Regla de comportamiento:
-
-- el usuario solo debe llegar a `/quick/result` despues de completar el flujo rapido
-- el usuario solo debe llegar a `/test/result` despues de completar el test
-- si entra directamente sin contexto valido, se le redirige a `/quick` o `/test`
-
-### Convencion de naming
-
-Para mantener coherencia y evitar rutas demasiado largas o ambiguas:
-
-- usar `/quick` en vez de `/quick-match`
-- usar `/test` en vez de `/life-areas-test`
-- usar `/quick/result` y `/test/result` en vez de una ruta generica `/results`
+1. No sé qué ver ahora mismo
+2. Sé cómo me siento, pero no sé qué me ayudaría
+3. Quiero una recomendación con sentido, no random
 
 ---
 
-## 5. Result Screens
+## 4. Lógica del producto
 
-No hace falta forzar una sola implementacion de resultado si la experiencia de uso es distinta.
+No usamos:
+- géneros
+- popularidad
+- tendencias
 
-### Decisión
-
-Mantener dos implementaciones separadas es valido y recomendable mientras sus objetivos UX sean diferentes:
-
-- quick result: respuesta rapida, emocional y directa
-- test result: lectura mas reflexiva, con rueda de vida y areas prioritarias
-
-### Criterio tecnico
-
-- compartir piezas reutilizables solo cuando haya duplicacion real
-- no unificar artificialmente si eso complica el producto
+Usamos:
+- estado emocional
+- áreas de vida
+- necesidad actual
+- tono de la recomendación
 
 ---
 
-## 6. MovieGrid
+## 5. Flujos principales
 
-MovieGrid se entiende como una pieza reutilizable de exploracion de peliculas dentro del producto.
+### Flujo ideal
+Home → elección de camino → resultados → detalle → volver o reiniciar
 
-### Direccion de producto
+### Flujo rápido
+Home → Recomendación rápida → Resultados → Detalle de película
 
-Debe poder vivir en:
+### Flujo profundo
+Home → Test de áreas de vida → Resultados → Detalle de película
 
-- la home
-- las paginas de cada area
-- bloques de recomendacion donde tenga sentido
-
-### Paginas de area
-
-Las futuras paginas `/areas/:slug` serviran para mostrar un archivo o seleccion de peliculas por cada area de vida.
-
-Ejemplos:
-
-- `/areas/personal`
-- `/areas/salud`
-- `/areas/espiritualidad`
-
-Objetivo:
-
-- reforzar la estructura editorial del producto
-- permitir exploracion por tema, no solo por flujo
+El producto debe sentirse guiado, no navegacional. La navegación acompaña el flujo, no compite con él.
 
 ---
 
-## 7. Movie Detail
+## 6. Pantallas del MVP
 
-El detalle de pelicula se mantiene como pagina dedicada.
+### Núcleo
+- Home
+- Recomendación rápida (emociones)
+- Test de áreas de vida
+- Resultados
+- Detalle de película
+- About
 
-### Estado actual deseado
+### Sistema
+- 404
+- Loading
+- Error
+- Empty states
 
-`/movie/:id`
+---
 
-### Enfoque de producto
+## 7. Arquitectura de decisiones
 
-El detalle no necesita convertirse ahora en una ficha enciclopedica. Debe ayudar a decidir si esa pelicula encaja con el momento del usuario.
+Cada pantalla debe construirse en este orden:
 
-Por tanto, el enfoque actual es suficiente:
+1. Intención del usuario
+2. Objetivo de la pantalla
+3. Elementos obligatorios
+4. Sistema visual
+5. Contenido
 
-- hero cinematografico
-- metadata util
+---
+
+## 8. Sistema visual
+
+### Estilo
+
+MindCinema debe sentirse como un producto **cinematic calm**:
+
+- calmado
+- minimalista
+- emocional
+- editorial
+- limpio
+- premium sin exceso
+
+No buscamos una interfaz de streaming masiva ni una estética puramente utilitaria.
+La sensación debe ser la de un espacio cuidado que ayuda a elegir algo con sentido.
+
+### Principios visuales
+
+- Mucho aire y respiración entre bloques
+- Jerarquía tipográfica clara
+- Imágenes protagonistas pero controladas
+- Oscuros sobrios con acentos suaves
+- Tarjetas limpias y consistentes
+- Pocas decisiones por pantalla
+- Menos cajas, menos ruido, más intención
+- Layout contenido, centrado y coherente entre pantallas
+- Evitar scrolls innecesarios si la información puede resolverse mejor en el layout
+
+### Principios de composición
+
+- No rellenar huecos automáticamente con otros bloques
+- Cada sección debe tener una función clara
+- La información narrativa ocupa filas completas dentro del layout existente
+- Los CTA deben aparecer cuando el usuario ya entiende qué está viendo
+- Si un bloque se elimina, la página debe reorganizarse con intención, no con sustituciones improvisadas
+
+### Referencia de tono visual
+
+La app no debe parecer “catálogo infinito”.
+Debe parecer una experiencia cuidada, donde el contenido se presenta con calma y criterio.
+
+---
+
+## 9. UX principles
+
+- No hacer pensar (Don't Make Me Think)
+- Scan → decide → act
+- Evitar ambigüedad
+- Copy claro y humano
+- No duplicar información
+- CTA claros y coherentes
+
+---
+
+## 10. Taxonomía del producto
+
+### Áreas de vida
+
+Estas son las 9 áreas de vida definitivas del sistema:
+
+- Personal
+- Salud
+- Espiritualidad
+- Aventura
+- Amor
+- Familia
+- Amistad
+- Propósito
+- Finanzas
+
+Estas áreas estructuran:
+- el test
+- la lógica de resultado
+- la agrupación de recomendaciones
+- la organización futura de colecciones o categorías
+
+### Estados emocionales / entrada rápida
+
+La recomendación rápida no debe partir de géneros, sino de estados o intenciones claras.
+No hace falta una lista muy larga. Deben ser pocos estados, comprensibles y útiles.
+
+La selección definitiva de estados emocionales debe alinearse con:
+- rapidez de uso
+- lenguaje humano
+- claridad inmediata
+- intención cinematográfica
+
+---
+
+## 11. Lógica de recomendación
+
+El sistema debe conectar:
+
+input del usuario → categoría emocional / vital → tipo de película → selección
+
+### Entrada rápida
+El usuario elige un mood, estado emocional o intención.
+A partir de eso, el sistema devuelve una recomendación rápida y una selección de películas alineadas.
+
+### Entrada profunda
+El usuario responde 4 preguntas por cada una de las 9 áreas de vida.
+Cada respuesta vale:
+
+- Sí = 1
+- A veces = 0.5
+- No = 0
+
+Cada área obtiene una puntuación de 0 a 4.
+
+Interpretación:
+- 3–4 = área en buen momento
+- 1.5–2.5 = área que merece atención
+- 0–1 = área prioritaria
+
+Resultado:
+- se priorizan las 2–3 áreas con menor puntuación
+- esas áreas alimentan la recomendación de películas y la lectura del momento
+
+La recomendación no debe sentirse aleatoria. Siempre debe existir un criterio perceptible.
+
+---
+
+## 12. Resultados
+
+La pantalla de resultados no debe limitarse a listar películas.
+
+Debe cumplir tres funciones:
+
+1. Traducir lo detectado en una lectura clara
+2. Destacar qué áreas necesitan más atención
+3. Convertir esa lectura en recomendaciones accionables
+
+### Resultado rápido
+Debe sentirse inmediato, simple y cinematográfico.
+
+### Resultado profundo
+Debe incluir:
+- lectura principal del momento
+- visualización de la rueda de la vida
+- áreas prioritarias
+- recomendaciones agrupadas por área
+
+La rueda de la vida es una herramienta de auto-percepción, no solo una visualización.
+
+---
+
+## 13. Detalle de película
+
+La pantalla de detalle no debe ser una ficha técnica fría.
+Debe reinterpretar la información de TMDB desde la lógica de MindCinema.
+
+### Qué debe mostrar
+- Hero cinematográfico con backdrop y poster visible
+- Título
+- Año
+- Duración
+- Rating
+- Género
+- Sinopsis
+- Reparto principal
+- Dónde verla
+- Tráiler
+- Acción de volver
+
+### Qué evitar
+- Información duplicada
+- Ficha rápida redundante
+- CTAs ambiguos
+- Secciones genéricas sin valor real
+
+### Principio de detalle
+Primero emoción y contexto.
+Después utilidad.
+
+---
+
+## 14. SEO (mínimo viable)
+
+Sí:
+- title por página
+- meta description
+- URLs limpias
+- Open Graph básico
+
+No:
+- estrategia SEO avanzada (por ahora)
+
+---
+
+## 15. Estructura de rutas
+
+Base actual:
+
+- /
+- /quick
+- /quick/result
+- /test
+- /test/result
+- /areas/:slug
+- /movie/:id
+- /about
+
+Mejora futura:
+- slugs en URLs de película
+- títulos dinámicos por página
+
+---
+
+## 16. Navegación
+
+### Header
+- logo
+- Inicio
+- Recomendación rápida
+- Explorar tu momento
+- Sobre MindCinema
+
+### Footer
+- navegación secundaria
+- créditos TMDB
+- info mínima
+
+La navegación debe ser pequeña, clara y no competir con el flujo principal.
+
+---
+
+## 17. Estados obligatorios
+
+- loading
+- error API
+- sin resultados
+- imagen no disponible
+- test incompleto
+
+Además, deben contemplarse estados coherentes para:
+- posters inexistentes
+- watch providers no disponibles
+- tráiler no disponible
+- detalle incompleto de película
+
+---
+
+## 18. Principio clave
+
+MindCinema no ayuda a explorar contenido.
+
+Ayuda a tomar una decisión con sentido.
+
+---
+
+## 19. Arquitectura funcional actual
+
+### Stack
+- React 18
+- Vite
+- TailwindCSS
+- TMDB API
+- frontend-only
+- sin backend
+- sin autenticación
+- sin persistencia por ahora
+
+### Resolución de datos
+Los datos se resuelven en cliente con:
+- curaduría propia
+- enriquecimiento desde TMDB
+- normalización antes de renderizar
+
+### Fuente de contenido
+TMDB aporta:
+- posters
+- backdrops
 - sinopsis
-- reparto principal
-- plataformas disponibles
-- trailer
+- créditos
+- vídeos
+- watch providers
+- external ids
 
-No es prioritario añadir mas informacion si no mejora la decision del usuario.
-
----
-
-## 8. About
-
-`/about` sera una pagina a crear.
-
-Su funcion sera explicar de forma sencilla:
-
-- que es MindCinema
-- por que existe
-- como funciona la recomendacion
-- que papel juega TMDB dentro del producto
-
-Debe mantener el mismo tono editorial y calmado que el resto de la experiencia.
+MindCinema aporta:
+- clasificación por áreas de vida
+- selección curada
+- lógica de recomendación
+- tono y contexto de presentación
 
 ---
 
-## 9. SEO
+## 20. Componentes y piezas núcleo
 
-Este documento de producto puede incluir vision futura, pero hay que distinguir claramente entre lo que existe hoy y lo que todavia no esta implementado.
+### Home
+Debe explicar:
+- qué es MindCinema
+- cómo funciona
+- qué caminos ofrece
+- por qué existe
 
-### Estado actual
+### QuickMood
+Selector de entrada rápida por mood / intención.
 
-Hoy no existe una estrategia SEO completa implementada.
+### Test
+Flujo completo de rueda de la vida:
+- 9 áreas
+- 4 preguntas por área
+- progresión secuencial
+- resultado al final
 
-No hay todavia:
+### ResultScreen
+Dos modos:
+- quick
+- deep
 
-- titles dinamicos por pagina
-- metadescriptions dinamicas
-- canonical URLs
-- slugs de pelicula
-- SSR, SSG o prerender
+Debe actuar como lectura + puente hacia la exploración.
 
-### Direccion futura
+### MovieGrid / recommendation sections
+Listado de películas recomendado:
+- curado
+- consistente con el estilo del producto
+- orientado a decisión
 
-SEO se deja como linea de evolucion del producto, no como capacidad actual.
-
-Objetivos futuros:
-
-- titles dinamicos por pagina
-- slugs mas legibles, por ejemplo `/movie/:id-:slug`
-- mejor estructura indexable en rutas de areas y peliculas
-- evaluar prerender, SSG o SSR si el producto necesita discoverability organica real
-
-### Regla de documentacion
-
-En este documento:
-
-- lo implementado debe aparecer como estado actual
-- lo decidido pero no hecho debe aparecer como decision proxima
-- lo deseable a medio plazo debe aparecer como direccion futura
+### MovieDetail
+Página de aterrizaje para cerrar la promesa del producto.
 
 ---
 
-## 10. Product Scope Summary
+## 21. Criterios de contenido y copy
 
-### Actual
+### El tono debe ser
+- cercano
+- claro
+- humano
+- sereno
+- directo
+- no cursi
+- no excesivamente poético
+- no técnico
 
-- home
-- flujo rapido dentro de `/`
-- test en `/test`
-- detalle en `/movie/:id`
-- recomendaciones curadas y enriquecidas con TMDB
+### Evitar
+- frases genéricas vacías
+- lenguaje de interfaz impersonal
+- redundancias
+- copy de “plataforma” sin alma
 
-### Siguiente paso estructural
+### Buscar
+- claridad inmediata
+- naturalidad en español
+- consistencia entre pantallas
 
-- enrutar el flujo rapido en `/quick`
-- crear `/quick/result`
-- crear `/test/result`
-- crear `/about`
-- preparar `/areas/:slug`
+---
 
-### Mas adelante
+## 22. Branding mínimo viable
 
-- slugs en peliculas
-- titles dinamicos
-- estrategia SEO real
-- consolidacion de MovieGrid como modulo reutilizable
+### Nombre
+MindCinema
 
+### Necesario para el MVP
+- logo tipográfico simple
+- favicon
+- frase de marca
+- tono verbal consistente
+
+### La identidad debe transmitir
+- cuidado
+- criterio
+- calma
+- sentido
+- cine como acompañamiento
+
+---
+
+## 23. Principios para trabajar con IA en este proyecto
+
+La IA no debe improvisar pantallas aisladas.
+
+Debe trabajar con visión de sistema.
+
+Cada nueva tarea debe respetar:
+- este documento de producto
+- la arquitectura vigente
+- las 9 áreas de vida definidas
+- el sistema visual acordado
+- el tono de copy ya trabajado
+
+### Regla práctica
+No pedir solo “haz una pantalla”.
+Pedir siempre:
+- objetivo
+- rol de la pantalla
+- constraints de layout
+- principios UX
+- coherencia con el producto
+
+---
+
+## 24. Criterio de MVP
+
+El MVP no necesita parecer grande.
+Necesita sentirse terminado, coherente y útil.
+
+### El MVP sí necesita
+- flujo principal claro
+- lógica de recomendación comprensible
+- consistencia visual
+- estados básicos
+- navegación mínima
+- branding mínimo
+- copy coherente
+
+### El MVP no necesita todavía
+- favoritos
+- login
+- perfil
+- sistema social
+- SEO avanzado
+- multiidioma
+- catálogo infinito
+- reseñas complejas
+
+---
+
+## 25. Norte del producto
+
+MindCinema no clasifica películas para entretener sin criterio.
+
+Clasifica películas para acompañar un momento.
+
+Y toda decisión de diseño, copy, navegación o arquitectura debe reforzar esa promesa.
