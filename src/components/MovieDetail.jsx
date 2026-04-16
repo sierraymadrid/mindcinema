@@ -248,10 +248,10 @@ function MovieDetail() {
     }
 
     if (location.state?.from === "/quick/result") {
-      return "La hemos traído aquí para ayudarte a decidir si encaja con lo que necesitas ahora.";
+      return null;
     }
 
-    return "Aquí tienes lo esencial para decidir si esta película encaja con tu momento.";
+    return null;
   }, [location.state, movieDetail]);
   const lifeAreaEmptyMessage =
     location.state?.from === "/quick/result"
@@ -385,9 +385,11 @@ function MovieDetail() {
                         ))}
                       </div>
 
-                      <p className="mt-5 max-w-2xl text-sm leading-6 text-white/62 sm:text-base">
-                        {recommendationContext}
-                      </p>
+                      {recommendationContext ? (
+                        <p className="mt-5 max-w-2xl text-sm leading-6 text-white/62 sm:text-base">
+                          {recommendationContext}
+                        </p>
+                      ) : null}
 
                       <button
                         type="button"
