@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import About from "./components/About";
 import AreaDetail from "./components/AreaDetail";
@@ -9,9 +10,14 @@ import QuickScreen from "./components/QuickScreen";
 import Test from "./components/Test";
 import TestResultScreen from "./components/TestResultScreen";
 import Layout from "./components/layout/Layout";
+import { applySeo } from "./utils/seo";
 
 function HomeScreen() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    applySeo({ title: "MindCinema — Cine para crecer" });
+  }, []);
 
   return (
     <Hero

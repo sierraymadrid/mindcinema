@@ -1,7 +1,13 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { applySeo } from "../utils/seo";
 
 function About() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    applySeo({ title: "Sobre MindCinema" });
+  }, []);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">

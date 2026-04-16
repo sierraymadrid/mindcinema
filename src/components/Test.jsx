@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { applySeo } from "../utils/seo";
 import TestAreaScreen from "./TestAreaScreen";
 
 function TestIntro({ onBack, onStart }) {
@@ -58,6 +59,14 @@ function TestIntro({ onBack, onStart }) {
 function Test() {
   const navigate = useNavigate();
   const [hasStarted, setHasStarted] = useState(false);
+
+  useEffect(() => {
+    applySeo({
+      title: "Recomendación profunda — MindCinema",
+      description:
+        "Descubre qué áreas de tu vida necesitan atención y recibe recomendaciones personalizadas.",
+    });
+  }, []);
 
   if (!hasStarted) {
     return (

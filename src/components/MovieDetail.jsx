@@ -13,6 +13,7 @@ import {
   getAreaPath,
   lifeAreaByKey,
 } from "../utils/lifeAreas";
+import { applySeo } from "../utils/seo";
 
 function sortProvidersByPriority(providers = []) {
   return [...providers].sort(
@@ -257,6 +258,18 @@ function MovieDetail() {
     location.state?.from === "/quick/result"
       ? "Esta película llega desde una recomendación rápida y no está asociada a un área de vida concreta."
       : "Todavía no hemos asociado esta película a un área de vida concreta.";
+
+  useEffect(() => {
+    if (!movieDetail?.title) {
+      return;
+    }
+
+    applySeo({
+      title: `${movieDetail.title} — MindCinema`,
+      description: movieDetail.overview || undefined,
+    });
+  }, [movieDetail]);
+
   const scrollToProviders = () =>
     document
       .getElementById("watch-providers")

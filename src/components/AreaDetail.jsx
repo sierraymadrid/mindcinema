@@ -6,6 +6,7 @@ import {
   getAreaMovieIds,
 } from "../recommendations/areaRecommendations";
 import { fetchMovieDetails } from "../services/tmdb";
+import { applySeo } from "../utils/seo";
 import MovieGrid from "./MovieGrid";
 import lifeAreas, { getAreaDisplayTitle } from "../utils/lifeAreas";
 
@@ -25,6 +26,20 @@ function AreaDetail() {
         : [],
     [area, moviePostersById]
   );
+
+  useEffect(() => {
+    if (!area) {
+      applySeo({ title: "Área no encontrada — MindCinema" });
+      return;
+    }
+
+    const displayTitle = getAreaDisplayTitle(area);
+
+    applySeo({
+      title: `${displayTitle} — Películas para crecer | MindCinema`,
+      description: area.description,
+    });
+  }, [area]);
 
   useEffect(() => {
     let isCancelled = false;
