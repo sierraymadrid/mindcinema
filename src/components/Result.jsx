@@ -10,6 +10,10 @@ function ResultMovieCard({ movie }) {
   const navigate = useNavigate();
   const [imageFailed, setImageFailed] = useState(!movie.image);
 
+  useEffect(() => {
+    setImageFailed(!movie.image);
+  }, [movie.image]);
+
   return (
     <button
       type="button"
@@ -48,7 +52,7 @@ function ResultMovieCard({ movie }) {
         ) : null}
 
         <div className="relative z-20 w-full">
-          <div className="inline-flex rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-[#d7c29d]">
+          <div className="inline-flex rounded-full border border-white/8 bg-black/18 px-2.5 py-1 text-[0.64rem] uppercase tracking-[0.18em] text-white/58 backdrop-blur-sm">
             {movie.type}
           </div>
         </div>
@@ -152,16 +156,16 @@ function Result({ mood, onBack }) {
 
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-5 text-[0.72rem] font-medium uppercase tracking-[0.42em] text-[#d2b98b]">
-              CINE PARA CRECER
+              RECOMENDACIÓN RÁPIDA
             </p>
 
             <h1 className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl md:text-[3.1rem]">
               {recommendation?.title || "Para ti, hoy"}
             </h1>
 
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
               {recommendation?.subtitle ||
-                "Cuatro elecciones distintas, ordenadas con un criterio claro para este momento."}
+                "Cuatro opciones para este momento. Empieza por la que más te llame y decide desde ahí."}
             </p>
           </div>
 

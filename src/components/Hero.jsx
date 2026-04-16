@@ -130,7 +130,8 @@ function Hero({ onQuickStart, onExploreMoment }) {
               </h1>
 
               <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
-                Para esas noches en las que no sabes qué ver, pero sientes que quieres algo con sentido.
+                Para esas noches en las que no sabes qué ver, pero sabes que quieres algo
+                con sentido.
               </p>
 
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -176,8 +177,9 @@ function Hero({ onQuickStart, onExploreMoment }) {
           <Container>
             <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 text-center shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-8">
               <p className="mx-auto max-w-2xl text-base leading-7 text-white/62 sm:text-lg">
-                Elige una recomendación rápida si quieres resolverlo ya, o entra en la
-                exploración de tu momento si prefieres una lectura más completa.
+                Si ya sabes qué necesitas, puedes decidir en un momento. Si prefieres
+                entender mejor dónde estás antes de elegir, entra en la exploración de tu
+                momento.
               </p>
 
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">

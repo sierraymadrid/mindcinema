@@ -1,6 +1,122 @@
 import { useState } from "react";
 import { moods } from "../data/moods";
 
+function MoodIcon({ moodId, isSelected }) {
+  const iconClass = isSelected ? "text-[#e3cfaa]" : "text-white/62";
+
+  switch (moodId) {
+    case "inspiracion":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className={`h-5 w-5 ${iconClass}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 3.5v3" />
+          <path d="M12 17.5v3" />
+          <path d="M4.5 12h3" />
+          <path d="M16.5 12h3" />
+          <path d="m6.8 6.8 2.2 2.2" />
+          <path d="m15 15 2.2 2.2" />
+          <path d="m17.2 6.8-2.2 2.2" />
+          <path d="M9 15 6.8 17.2" />
+          <circle cx="12" cy="12" r="3.5" />
+        </svg>
+      );
+    case "reflexionar":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className={`h-5 w-5 ${iconClass}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 4c4.2 0 7.5 2.9 7.5 6.7 0 3.6-2.8 6.2-6.5 6.6L9 20v-2.8c-2.7-1-4.5-3.3-4.5-6.5C4.5 6.9 7.8 4 12 4Z" />
+          <path d="M9.5 10.2c.3-1.1 1.2-1.9 2.5-1.9 1.4 0 2.5.9 2.5 2.2 0 1.9-2.3 2.1-2.3 4" />
+          <path d="M12 17h.01" />
+        </svg>
+      );
+    case "calma":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className={`h-5 w-5 ${iconClass}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M4 10c1.2 0 1.8-.8 2.4-1.5S7.7 7 9 7s1.9.8 2.6 1.5S12.8 10 14 10s1.8-.8 2.4-1.5S17.7 7 19 7" />
+          <path d="M4 14c1.2 0 1.8-.8 2.4-1.5S7.7 11 9 11s1.9.8 2.6 1.5S12.8 14 14 14s1.8-.8 2.4-1.5S17.7 11 19 11" />
+          <path d="M4 18c1.2 0 1.8-.8 2.4-1.5S7.7 15 9 15s1.9.8 2.6 1.5S12.8 18 14 18s1.8-.8 2.4-1.5S17.7 15 19 15" />
+        </svg>
+      );
+    case "motivacion":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className={`h-5 w-5 ${iconClass}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 20V9" />
+          <path d="m7.5 13.5 4.5-4.5 4.5 4.5" />
+          <path d="M5 4.5h14" />
+        </svg>
+      );
+    case "profundo":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className={`h-5 w-5 ${iconClass}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 4.5c4.2 0 7.5 3 7.5 7.5s-3.3 7.5-7.5 7.5S4.5 16.2 4.5 12 7.8 4.5 12 4.5Z" />
+          <path d="M12 8v4l2.5 2.5" />
+        </svg>
+      );
+    case "aventura":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          className={`h-5 w-5 ${iconClass}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="m14.5 5.5 4 4-8.5 8.5H6v-4Z" />
+          <path d="m12 8 4 4" />
+          <path d="M13.5 4h6.5v6.5" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
 function QuickMood({ onBack, onMoodSelect }) {
   const [selectedMood, setSelectedMood] = useState("");
 
@@ -46,8 +162,9 @@ function QuickMood({ onBack, onMoodSelect }) {
               ¿Cómo te sientes hoy?
             </h1>
 
-            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-white/62 sm:text-lg">
-              Elige una opción y te recomendaremos una película al momento.
+            <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-white/62 sm:text-lg">
+              Elige la sensación o el tipo de experiencia que necesitas ahora y te
+              recomendaremos una película al momento.
             </p>
           </div>
 
@@ -68,13 +185,16 @@ function QuickMood({ onBack, onMoodSelect }) {
                     }`}
                   >
                     <span
-                      className={`mb-4 flex h-8 w-8 items-center justify-center rounded-full border text-sm ${
+                      className={`mb-5 flex h-10 w-10 items-center justify-center rounded-full border ${
                         isSelected
-                          ? "border-[#d8c39b]/60 bg-[#d8c39b]/12 text-[#e3cfaa]"
-                          : "border-white/12 text-white/40"
+                          ? "border-[#d8c39b]/45 bg-[#d8c39b]/8"
+                          : "border-white/12 bg-white/[0.015]"
                       }`}
                     >
-                      {isSelected ? "•" : ""}
+                      <MoodIcon
+                        moodId={mood.id}
+                        isSelected={isSelected}
+                      />
                     </span>
                     <span className="block text-base font-medium leading-6">
                       {mood.label}

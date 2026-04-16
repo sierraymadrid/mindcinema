@@ -230,6 +230,33 @@ function MovieDetail() {
     return `${movieDetail.overview.slice(0, 220).trim()}…`;
   }, [movieDetail]);
   const isOverviewExpanded = expandedOverviewFor === id;
+  const recommendationContext = useMemo(() => {
+    if (!movieDetail) {
+      return null;
+    }
+
+    if (location.state?.from === "/test/result" && movieDetail.lifeAreas.length) {
+      const lifeAreaTitles = movieDetail.lifeAreas.map((area) => area.title);
+      const areaList =
+        lifeAreaTitles.length === 1
+          ? lifeAreaTitles[0]
+          : `${lifeAreaTitles.slice(0, -1).join(", ")} y ${
+              lifeAreaTitles[lifeAreaTitles.length - 1]
+            }`;
+
+      return `La recomendamos desde ${areaList.toLowerCase()}. Aquí puedes ver si encaja contigo hoy.`;
+    }
+
+    if (location.state?.from === "/quick/result") {
+      return "La hemos traído aquí para ayudarte a decidir si encaja con lo que necesitas ahora.";
+    }
+
+    return "Aquí tienes lo esencial para decidir si esta película encaja con tu momento.";
+  }, [location.state, movieDetail]);
+  const lifeAreaEmptyMessage =
+    location.state?.from === "/quick/result"
+      ? "Esta película llega desde una recomendación rápida y no está asociada a un área de vida concreta."
+      : "Todavía no hemos asociado esta película a un área de vida concreta.";
   const scrollToProviders = () =>
     document
       .getElementById("watch-providers")
@@ -358,6 +385,10 @@ function MovieDetail() {
                         ))}
                       </div>
 
+                      <p className="mt-5 max-w-2xl text-sm leading-6 text-white/62 sm:text-base">
+                        {recommendationContext}
+                      </p>
+
                       <button
                         type="button"
                         onClick={scrollToProviders}
@@ -390,7 +421,7 @@ function MovieDetail() {
                 </div>
               ) : (
                 <p className="mt-4 text-sm leading-6 text-white/56">
-                  Todavía no hemos asociado esta película a un área de vida concreta.
+                  {lifeAreaEmptyMessage}
                 </p>
               )}
             </section>

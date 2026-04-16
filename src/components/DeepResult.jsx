@@ -87,8 +87,9 @@ function ResultIntro() {
         Para ti, hoy
       </h2>
 
-      <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-white/62 sm:text-lg">
-        Cuatro elecciones distintas, ordenadas con un criterio claro para este momento.
+      <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-white/62 sm:text-lg">
+        Estas películas salen de las áreas que hoy parecen pedir más atención. Empieza
+        por la que más te llame y decide desde ahí.
       </p>
     </div>
   );
@@ -386,7 +387,7 @@ function DeepResult({ answersByArea }) {
 
           <section className="mt-10 text-center">
             <p className="text-sm leading-6 text-white/52 sm:text-base">
-              Y estas son las areas que necesitan atencion
+              Estas son las áreas que hoy parecen necesitar más atención
             </p>
 
             <div className="mt-4 flex flex-wrap justify-center gap-3">
