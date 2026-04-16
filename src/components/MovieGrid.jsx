@@ -65,13 +65,25 @@ function MovieGrid({
 
   return (
     <section className={sectionClasses}>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
         <div className={isRow ? "" : "max-w-2xl"}>
-          <h2 className={isRow ? "text-[1.85rem] font-semibold tracking-tight text-white sm:text-[2.1rem] lg:text-[2.25rem]" : "text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl"}>
+          <h2
+            className={
+              isRow
+                ? "text-[1.55rem] font-semibold tracking-tight text-white sm:text-[1.85rem] lg:text-[2.1rem]"
+                : "text-[1.8rem] font-semibold tracking-[-0.03em] text-white sm:text-3xl lg:text-4xl"
+            }
+          >
             {areaTitle}
           </h2>
           {description ? (
-            <p className={isRow ? "mt-2 max-w-2xl text-sm leading-6 text-white/56 sm:text-base sm:leading-7" : "mt-4 text-base leading-7 text-white/62 sm:text-lg sm:leading-8"}>
+            <p
+              className={
+                isRow
+                  ? "mt-2 max-w-2xl text-sm leading-6 text-white/56 sm:text-base sm:leading-7"
+                  : "mt-4 text-sm leading-6 text-white/62 sm:text-base sm:leading-7 lg:text-lg lg:leading-8"
+              }
+            >
               {description}
             </p>
           ) : null}
@@ -80,7 +92,7 @@ function MovieGrid({
         {ctaLabel && ctaTo ? (
           <Link
             to={ctaTo}
-            className="shrink-0 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/75 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+            className="w-full rounded-full border border-white/10 bg-white/5 px-4 py-2 text-center text-xs font-medium text-white/75 transition hover:border-white/20 hover:bg-white/10 hover:text-white sm:w-auto sm:shrink-0 sm:py-1.5"
           >
             {ctaLabel}
           </Link>

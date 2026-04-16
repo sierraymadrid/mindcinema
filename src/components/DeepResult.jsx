@@ -413,16 +413,16 @@ function DeepResult({ answersByArea }) {
             <ResultIntro />
 
             <div className="mt-10">
-              <div className="mb-5 flex items-center justify-end gap-2">
+              <div className="mb-5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-end">
                 {isLoadingPosters ? (
-                  <p className="mr-auto text-[0.68rem] uppercase tracking-[0.2em] text-white/34">
+                  <p className="text-[0.68rem] uppercase tracking-[0.2em] text-white/34 sm:mr-auto">
                     Actualizando fichas
                   </p>
                 ) : null}
 
                 {!isLoadingPosters && hasPosterUpdateError ? (
                   <>
-                    <p className="mr-auto text-sm text-white/46">
+                    <p className="text-sm text-white/46 sm:mr-auto">
                       Algunas fichas no se pudieron actualizar.
                     </p>
                     <button
