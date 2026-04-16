@@ -269,11 +269,56 @@ export const moviesByArea = {
       { title: "The Big Sick", tmdbId: 416477, tier: "archive", active: true },
     ],
   },
-  familia: [
-    { title: "Little Miss Sunshine", tmdbId: 773 },
-    { title: "Minari", tmdbId: 615643 },
-    { title: "Shoplifters", tmdbId: 505192 },
-  ],
+  familia: {
+    movies: [
+      { title: "Shoplifters", tmdbId: 505192, tier: "featured", active: true },
+      { title: "Tokyo Story", tmdbId: 18148, tier: "featured", active: true },
+      { title: "Still Walking", tmdbId: 25050, tier: "featured", active: true },
+      { title: "CODA", tmdbId: 776503, tier: "featured", active: true },
+      { title: "Boyhood", tmdbId: 85350, tier: "core", active: true },
+      { title: "Ordinary People", tmdbId: 16619, tier: "core", active: true },
+      {
+        title: "The Royal Tenenbaums",
+        tmdbId: 9428,
+        tier: "core",
+        active: true,
+      },
+      { title: "Instant Family", tmdbId: 491418, tier: "core", active: true },
+      {
+        title: "Home for the Holidays",
+        tmdbId: 9089,
+        tier: "core",
+        active: true,
+      },
+      { title: "Nobody Knows", tmdbId: 2517, tier: "core", active: true },
+      {
+        title: "Terms of Endearment",
+        tmdbId: 11050,
+        tier: "core",
+        active: true,
+      },
+      { title: "Parenthood", tmdbId: 1552, tier: "core", active: true },
+      { title: "Everybody's Fine", tmdbId: 26171, tier: "core", active: true },
+      {
+        title: "Kramer vs. Kramer",
+        tmdbId: 12102,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "What's Eating Gilbert Grape",
+        tmdbId: 1587,
+        tier: "archive",
+        active: true,
+      },
+      {
+        title: "Fanny and Alexander",
+        tmdbId: 5961,
+        tier: "archive",
+        active: true,
+      },
+    ],
+  },
   amistad: {
     movies: [
       { title: "The Holdovers", tmdbId: 840430, tier: "featured", active: true },
