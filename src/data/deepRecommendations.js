@@ -274,11 +274,56 @@ export const moviesByArea = {
     { title: "Minari", tmdbId: 615643 },
     { title: "Shoplifters", tmdbId: 505192 },
   ],
-  amistad: [
-    { title: "The Intouchables", tmdbId: 77338 },
-    { title: "Frances Ha", tmdbId: 121986 },
-    { title: "The Holdovers", tmdbId: 840430 },
-  ],
+  amistad: {
+    movies: [
+      { title: "The Holdovers", tmdbId: 840430, tier: "featured", active: true },
+      { title: "Stand by Me", tmdbId: 235, tier: "featured", active: true },
+      { title: "Booksmart", tmdbId: 505600, tier: "featured", active: true },
+      { title: "Paddleton", tmdbId: 525183, tier: "featured", active: true },
+      { title: "Thelma & Louise", tmdbId: 1541, tier: "core", active: true },
+      { title: "Ghost World", tmdbId: 1548, tier: "core", active: true },
+      { title: "Luca", tmdbId: 508943, tier: "core", active: true },
+      {
+        title: "The Sisterhood of the Traveling Pants",
+        tmdbId: 9779,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "Me and Earl and the Dying Girl",
+        tmdbId: 308369,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "The Banshees of Inisherin",
+        tmdbId: 674324,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "Brian and Charles",
+        tmdbId: 913814,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "The Kings of Summer",
+        tmdbId: 156700,
+        tier: "core",
+        active: true,
+      },
+      { title: "Superbad", tmdbId: 8363, tier: "core", active: true },
+      {
+        title: "Romy and Michele's High School Reunion",
+        tmdbId: 9611,
+        tier: "core",
+        active: true,
+      },
+      { title: "Muriel's Wedding", tmdbId: 236, tier: "archive", active: true },
+      { title: "Beaches", tmdbId: 15592, tier: "archive", active: true },
+    ],
+  },
   proposito: {
     movies: [
       { title: "Soul", tmdbId: 508442, tier: "featured", active: true },
