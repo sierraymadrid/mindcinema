@@ -49,12 +49,7 @@ export const moviesByArea = {
         tier: "featured",
         active: true,
       },
-      {
-        title: "Silver Linings Playbook",
-        tmdbId: 82693,
-        tier: "featured",
-        active: true,
-      },
+      { title: "About Time", tmdbId: 122906, tier: "featured", active: true },
       { title: "Sound of Metal", tmdbId: 502033, tier: "core", active: true },
       {
         title: "Our Little Sister",
@@ -68,7 +63,12 @@ export const moviesByArea = {
         tier: "core",
         active: true,
       },
-      { title: "About Time", tmdbId: 122906, tier: "core", active: true },
+      {
+        title: "Silver Linings Playbook",
+        tmdbId: 82693,
+        tier: "core",
+        active: true,
+      },
       { title: "The Farewell", tmdbId: 565310, tier: "core", active: true },
       {
         title: "The Fundamentals of Caring",
@@ -228,11 +228,13 @@ export const moviesByArea = {
     movies: [
       { title: "Before Sunrise", tmdbId: 76, tier: "featured", active: true },
       { title: "Past Lives", tmdbId: 666277, tier: "featured", active: true },
-      { title: "Her", tmdbId: 152601, tier: "featured", active: true },
+      { title: "Once", tmdbId: 5723, tier: "featured", active: true },
+      { title: "Brooklyn", tmdbId: 167073, tier: "featured", active: true },
+      { title: "Her", tmdbId: 152601, tier: "core", active: true },
       {
         title: "In the Mood for Love",
         tmdbId: 843,
-        tier: "featured",
+        tier: "core",
         active: true,
       },
       {
@@ -241,9 +243,7 @@ export const moviesByArea = {
         tier: "core",
         active: true,
       },
-      { title: "Once", tmdbId: 5723, tier: "core", active: true },
       { title: "Blue Valentine", tmdbId: 46705, tier: "core", active: true },
-      { title: "Brooklyn", tmdbId: 167073, tier: "core", active: true },
       { title: "Carol", tmdbId: 258480, tier: "core", active: true },
       { title: "Weekend", tmdbId: 79120, tier: "core", active: true },
       {
@@ -272,18 +272,19 @@ export const moviesByArea = {
   familia: {
     movies: [
       { title: "Shoplifters", tmdbId: 505192, tier: "featured", active: true },
-      { title: "Tokyo Story", tmdbId: 18148, tier: "featured", active: true },
-      { title: "Still Walking", tmdbId: 25050, tier: "featured", active: true },
       { title: "CODA", tmdbId: 776503, tier: "featured", active: true },
+      { title: "Parenthood", tmdbId: 1552, tier: "featured", active: true },
+      { title: "Instant Family", tmdbId: 491418, tier: "featured", active: true },
       { title: "Boyhood", tmdbId: 85350, tier: "core", active: true },
       { title: "Ordinary People", tmdbId: 16619, tier: "core", active: true },
+      { title: "Tokyo Story", tmdbId: 18148, tier: "core", active: true },
+      { title: "Still Walking", tmdbId: 25050, tier: "core", active: true },
       {
         title: "The Royal Tenenbaums",
         tmdbId: 9428,
         tier: "core",
         active: true,
       },
-      { title: "Instant Family", tmdbId: 491418, tier: "core", active: true },
       {
         title: "Home for the Holidays",
         tmdbId: 9089,
@@ -297,7 +298,6 @@ export const moviesByArea = {
         tier: "core",
         active: true,
       },
-      { title: "Parenthood", tmdbId: 1552, tier: "core", active: true },
       { title: "Everybody's Fine", tmdbId: 26171, tier: "core", active: true },
       {
         title: "Kramer vs. Kramer",
@@ -409,11 +409,56 @@ export const moviesByArea = {
       { title: "School of Rock", tmdbId: 1584, tier: "archive", active: true },
     ],
   },
-  finanzas: [
-    { title: "The Pursuit of Happyness", tmdbId: 1402 },
-    { title: "Nomadland", tmdbId: 581734 },
-    { title: "99 Homes", tmdbId: 283235 },
-  ],
+  finanzas: {
+    movies: [
+      { title: "99 Homes", tmdbId: 283235, tier: "featured", active: true },
+      { title: "Nomadland", tmdbId: 581734, tier: "featured", active: true },
+      { title: "The Big Short", tmdbId: 318846, tier: "featured", active: true },
+      { title: "Trading Places", tmdbId: 1621, tier: "featured", active: true },
+      {
+        title: "Sorry We Missed You",
+        tmdbId: 522369,
+        tier: "core",
+        active: true,
+      },
+      { title: "Wendy and Lucy", tmdbId: 8942, tier: "core", active: true },
+      { title: "Rosetta", tmdbId: 11489, tier: "core", active: true },
+      {
+        title: "Emily the Criminal",
+        tmdbId: 862965,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "The Company Men",
+        tmdbId: 44129,
+        tier: "core",
+        active: true,
+      },
+      { title: "Margin Call", tmdbId: 50839, tier: "core", active: true },
+      { title: "Wall Street", tmdbId: 10673, tier: "core", active: true },
+      {
+        title: "Too Big to Fail",
+        tmdbId: 65034,
+        tier: "core",
+        active: true,
+      },
+      { title: "Default", tmdbId: 554137, tier: "core", active: true },
+      {
+        title: "Support the Girls",
+        tmdbId: 456086,
+        tier: "core",
+        active: true,
+      },
+      {
+        title: "The Florida Project",
+        tmdbId: 394117,
+        tier: "core",
+        active: true,
+      },
+      { title: "Hustlers", tmdbId: 540901, tier: "archive", active: true },
+    ],
+  },
 };
 
 export default moviesByArea;
