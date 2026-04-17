@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { applySeo } from "../utils/seo";
+import {
+  clearStoredTestResult,
+  loadStoredTestResult,
+  saveTestResult,
+} from "../utils/testResultStorage";
 import TestAreaScreen from "./TestAreaScreen";
 
-function TestIntro({ onBack, onStart }) {
+function TestIntro({ hasSavedResult, onBack, onStart, onViewSavedResult }) {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
       <div className="absolute inset-0">
@@ -43,13 +48,33 @@ function TestIntro({ onBack, onStart }) {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={onStart}
-            className="mt-8 inline-flex w-full items-center justify-center rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-5 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
-          >
-            Empezar test
-          </button>
+          {hasSavedResult ? (
+            <div className="mt-8 flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={onViewSavedResult}
+                className="inline-flex w-full items-center justify-center rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-5 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+              >
+                Ver resultado actual
+              </button>
+
+              <button
+                type="button"
+                onClick={onStart}
+                className="inline-flex w-full items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/90 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06] hover:text-white"
+              >
+                Volver a hacer el test
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onStart}
+              className="mt-8 inline-flex w-full items-center justify-center rounded-full border border-[#d8c39b]/20 bg-[linear-gradient(135deg,rgba(224,196,150,0.18),rgba(224,196,150,0.08))] px-5 py-3 text-sm font-medium text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-inset ring-white/10 transition duration-300 hover:-translate-y-0.5 hover:border-[#d8c39b]/40 hover:bg-[linear-gradient(135deg,rgba(224,196,150,0.26),rgba(224,196,150,0.12))]"
+            >
+              Empezar test
+            </button>
+          )}
         </div>
       </section>
     </main>
@@ -59,6 +84,7 @@ function TestIntro({ onBack, onStart }) {
 function Test() {
   const navigate = useNavigate();
   const [hasStarted, setHasStarted] = useState(false);
+  const [savedAnswersByArea, setSavedAnswersByArea] = useState(null);
 
   useEffect(() => {
     applySeo({
@@ -66,13 +92,33 @@ function Test() {
       description:
         "Descubre qué áreas de tu vida necesitan atención y recibe recomendaciones personalizadas.",
     });
+
+    setSavedAnswersByArea(loadStoredTestResult());
   }, []);
+
+  function handleStart() {
+    clearStoredTestResult();
+    setSavedAnswersByArea(null);
+    setHasStarted(true);
+  }
+
+  function handleViewSavedResult() {
+    if (!savedAnswersByArea) {
+      return;
+    }
+
+    navigate("/test/result", {
+      state: { answersByArea: savedAnswersByArea },
+    });
+  }
 
   if (!hasStarted) {
     return (
       <TestIntro
+        hasSavedResult={Boolean(savedAnswersByArea)}
         onBack={() => navigate("/")}
-        onStart={() => setHasStarted(true)}
+        onStart={handleStart}
+        onViewSavedResult={handleViewSavedResult}
       />
     );
   }
@@ -80,9 +126,12 @@ function Test() {
   return (
     <TestAreaScreen
       onBack={() => navigate("/")}
-      onComplete={(answersByArea) =>
-        navigate("/test/result", { state: { answersByArea } })
-      }
+      onComplete={(answersByArea) => {
+        saveTestResult(answersByArea);
+        setSavedAnswersByArea(answersByArea);
+
+        navigate("/test/result", { state: { answersByArea } });
+      }}
     />
   );
 }

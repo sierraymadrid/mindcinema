@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import lifeAreas from "../data/lifeAreas";
 
 const answerOptions = ["Sí", "A veces", "No"];
@@ -16,6 +16,7 @@ function CinematicBackground() {
 }
 
 function TestAreaScreen({ onBack, onComplete }) {
+  const formCardRef = useRef(null);
   const [state, setState] = useState({
     currentAreaIndex: 0,
     answersByArea: {},
@@ -83,12 +84,22 @@ function TestAreaScreen({ onBack, onComplete }) {
     }));
   }
 
+  useEffect(() => {
+    formCardRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [state.currentAreaIndex]);
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
       <CinematicBackground />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-xl items-center px-6 py-14 sm:px-8 sm:py-16">
-        <div className="w-full rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-7">
+        <div
+          ref={formCardRef}
+          className="w-full rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] backdrop-blur sm:p-7"
+        >
           <button
             type="button"
             onClick={handlePrevious}
