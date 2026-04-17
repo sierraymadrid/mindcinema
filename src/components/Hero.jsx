@@ -164,7 +164,7 @@ function Hero({ onQuickStart, onExploreMoment }) {
                   areaKey={area.key}
                   areaTitle={area.displayTitle}
                   movies={area.movies}
-                  ctaLabel="Ver área"
+                  ctaLabel="Ver más"
                   ctaTo={getAreaPath(area.key)}
                   layout="row"
                 />
